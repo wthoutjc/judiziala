@@ -30,7 +30,7 @@ export default function DocumentoPage() {
   return (
     <>
       <Header title="Documento" />
-      <main className="flex-1 flex flex-col p-6 max-w-[1280px] w-full">
+      <main className="flex-1 flex flex-col p-4 sm:p-6 max-w-[1280px] w-full">
         <Link
           href="/procesos/1"
           className="inline-flex items-center gap-1.5 text-xs text-[var(--ink-muted)] hover:text-[var(--ink)] mb-4 transition-colors"

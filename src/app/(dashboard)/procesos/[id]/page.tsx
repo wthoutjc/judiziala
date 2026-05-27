@@ -62,7 +62,7 @@ export default function ProcesoPage({ params }: { params: { id: string } }) {
   return (
     <>
       <Header title="Proceso" />
-      <main className="flex-1 p-6 max-w-[1280px] w-full">
+      <main className="flex-1 p-4 sm:p-6 max-w-[1280px] w-full">
         {/* Back */}
         <Link
           href="/dashboard"

@@ -31,7 +31,7 @@ export default function ProcesosPage() {
   return (
     <>
       <Header title="Procesos" />
-      <main className="flex-1 p-6 max-w-[1280px] w-full">
+      <main className="flex-1 p-4 sm:p-6 max-w-[1280px] w-full">
         <div className="flex items-center justify-between mb-5 gap-4">
           <div>
             <p className="text-sm text-[var(--ink-muted)]">

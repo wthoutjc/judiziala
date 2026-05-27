@@ -13,8 +13,10 @@ import {
   Settings,
   LogOut,
   ChevronDown,
+  X,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useSidebar } from "./sidebar-context"
 
 const navItems = [
   { label: "Resumen", href: "/dashboard", icon: LayoutDashboard },
@@ -26,6 +28,7 @@ const navItems = [
 export function Sidebar() {
   const pathname = usePathname()
   const [signingOut, setSigningOut] = useState(false)
+  const { close } = useSidebar()
 
   const handleSignOut = async () => {
     setSigningOut(true)
@@ -33,15 +36,22 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="w-60 flex-shrink-0 bg-[var(--surface)] border-r border-[var(--line)] flex flex-col h-screen sticky top-0">
+    <aside className="w-60 flex-shrink-0 bg-[var(--surface)] border-r border-[var(--line)] flex flex-col h-screen">
       {/* Logo */}
       <div className="h-14 flex items-center px-5 border-b border-[var(--line)]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 bg-[var(--brand)] rounded-lg flex items-center justify-center">
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          <div className="w-7 h-7 bg-[var(--brand)] rounded-lg flex items-center justify-center flex-shrink-0">
             <Scale className="w-4 h-4 text-[oklch(0.99_0.004_250)]" />
           </div>
           <span className="font-semibold text-[var(--ink)] tracking-tight">Judiziala</span>
         </div>
+        <button
+          onClick={close}
+          aria-label="Cerrar menú"
+          className="lg:hidden w-8 h-8 flex items-center justify-center rounded-md text-[var(--ink-muted)] hover:bg-[var(--sunken)] transition-colors flex-shrink-0"
+        >
+          <X className="w-4 h-4" />
+        </button>
       </div>
 
       {/* Workspace selector */}
@@ -70,8 +80,9 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={close}
               className={cn(
-                "flex items-center justify-between px-2.5 py-2 rounded-md text-sm transition-colors group",
+                "flex items-center justify-between px-2.5 py-2.5 lg:py-2 rounded-md text-sm transition-colors group",
                 isActive
                   ? "bg-[var(--brand-soft)] text-[var(--brand-ink)] font-medium"
                   : "text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--sunken)]"
@@ -109,7 +120,8 @@ export function Sidebar() {
       <div className="px-3 py-3 border-t border-[var(--line)] space-y-0.5">
         <Link
           href="/settings"
-          className="flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--sunken)] transition-colors"
+          onClick={close}
+          className="flex items-center gap-2.5 px-2.5 py-2.5 lg:py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--sunken)] transition-colors"
         >
           <Settings className="w-4 h-4 text-[var(--ink-subtle)]" />
           Configuración
@@ -118,7 +130,7 @@ export function Sidebar() {
           type="button"
           onClick={handleSignOut}
           disabled={signingOut}
-          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition-colors disabled:opacity-50"
+          className="w-full flex items-center gap-2.5 px-2.5 py-2.5 lg:py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition-colors disabled:opacity-50"
         >
           <LogOut className="w-4 h-4" />
           {signingOut ? "Cerrando sesión..." : "Cerrar sesión"}

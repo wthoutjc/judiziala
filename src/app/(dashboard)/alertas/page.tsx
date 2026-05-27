@@ -71,7 +71,7 @@ export default function AlertasPage() {
   return (
     <>
       <Header title="Alertas" />
-      <main className="flex-1 p-6 max-w-[1280px] w-full">
+      <main className="flex-1 p-4 sm:p-6 max-w-[1280px] w-full">
         {/* Top bar */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-2">
@@ -98,7 +98,7 @@ export default function AlertasPage() {
         </div>
 
         {/* Filter tabs */}
-        <div className="flex items-center gap-1 mb-5 bg-[var(--sunken)] rounded-lg p-1 w-fit">
+        <div className="flex items-center gap-1 mb-5 bg-[var(--sunken)] rounded-lg p-1 overflow-x-auto">
           {filtros.map((f) => (
             <button
               key={f.key}

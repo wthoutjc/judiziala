@@ -1,14 +1,10 @@
-import { Sidebar } from "@/components/layout/sidebar"
+import { SidebarProvider } from "@/components/layout/sidebar-context"
+import { DashboardShell } from "@/components/layout/dashboard-shell"
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-[var(--canvas)]">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">{children}</div>
-    </div>
+    <SidebarProvider>
+      <DashboardShell>{children}</DashboardShell>
+    </SidebarProvider>
   )
 }

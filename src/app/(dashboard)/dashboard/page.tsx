@@ -69,7 +69,7 @@ export default function DashboardPage() {
   return (
     <>
       <Header title="Resumen" />
-      <main className="flex-1 p-6 max-w-[1280px] w-full">
+      <main className="flex-1 p-4 sm:p-6 max-w-[1280px] w-full">
         {/* Command strip: narrative summary, not a hero-metric grid */}
         <section className="mb-6">
           <p className="text-xs text-[var(--ink-subtle)] capitalize tabular">{hoy}</p>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
             </span>
           </h2>
 
-          <div className="flex items-center gap-5 mt-4 text-xs">
+          <div className="flex items-center gap-4 sm:gap-5 mt-4 text-xs flex-wrap">
             <div className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-[var(--brand)]" />
               <span className="text-[var(--ink-muted)]">
@@ -248,25 +248,27 @@ export default function DashboardPage() {
                   <Link
                     key={proceso.id}
                     href={`/procesos/${proceso.id}`}
-                    className="grid grid-cols-[1fr_2fr_1fr_auto] items-center gap-4 px-5 py-3 hover:bg-[var(--sunken)] transition-colors"
+                    className="flex items-center justify-between px-5 py-3 hover:bg-[var(--sunken)] transition-colors"
                   >
-                    <span className="text-xs font-mono text-[var(--ink-subtle)] truncate tabular">
-                      {proceso.radicado.slice(0, 14)}...
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-[var(--ink)] truncate">
+                    <div className="min-w-0 flex-1">
+                      <span className="text-xs font-mono text-[var(--ink-subtle)] tabular">
+                        {proceso.radicado.slice(0, 14)}...
+                      </span>
+                      <p className="text-sm font-medium text-[var(--ink)] truncate mt-0.5">
                         {proceso.partes.demandante}{" "}
                         <span className="text-[var(--ink-subtle)] font-normal">vs.</span>{" "}
                         {proceso.partes.demandado}
                       </p>
                       <p className="text-xs text-[var(--ink-muted)] truncate">{proceso.despacho}</p>
                     </div>
-                    <span className="text-xs text-[var(--ink-subtle)] tabular">
-                      {proceso.fechaUltimaActuacion}
-                    </span>
-                    <Badge variant="outline" className={`text-[10px] h-5 px-2 font-medium border ${cfg.className}`}>
-                      {cfg.label}
-                    </Badge>
+                    <div className="flex items-center gap-3 ml-4 flex-shrink-0">
+                      <span className="hidden sm:block text-xs text-[var(--ink-subtle)] tabular">
+                        {proceso.fechaUltimaActuacion}
+                      </span>
+                      <Badge variant="outline" className={`text-[10px] h-5 px-2 font-medium border ${cfg.className}`}>
+                        {cfg.label}
+                      </Badge>
+                    </div>
                   </Link>
                 )
               })}
