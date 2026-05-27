@@ -4,36 +4,33 @@ import GitHub from "next-auth/providers/github"
 import Credentials from "next-auth/providers/credentials"
 import { isDemoMode } from "@/lib/demo-mode"
 
-const providers = [
-  Google({
-    clientId: process.env.AUTH_GOOGLE_ID,
-    clientSecret: process.env.AUTH_GOOGLE_SECRET,
-  }),
-  GitHub({
-    clientId: process.env.AUTH_GITHUB_ID,
-    clientSecret: process.env.AUTH_GITHUB_SECRET,
-  }),
-]
-
-if (isDemoMode()) {
-  providers.push(
-    Credentials({
-      id: "demo",
-      name: "Demo",
-      credentials: {},
-      authorize() {
-        return {
-          id: "demo",
-          name: "Usuario Demo",
-          email: "demo@judiziala.local",
-        }
-      },
-    })
-  )
-}
-
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers,
+  providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+    GitHub({
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
+    }),
+    ...(isDemoMode()
+      ? [
+          Credentials({
+            id: "demo",
+            name: "Demo",
+            credentials: {},
+            authorize() {
+              return {
+                id: "demo",
+                name: "Usuario Demo",
+                email: "demo@judiziala.local",
+              }
+            },
+          }),
+        ]
+      : []),
+  ],
   pages: {
     signIn: "/login",
   },
