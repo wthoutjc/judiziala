@@ -2,6 +2,8 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { signOut } from "next-auth/react"
+import { useState } from "react"
 import {
   Scale,
   LayoutDashboard,
@@ -23,6 +25,12 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname()
+  const [signingOut, setSigningOut] = useState(false)
+
+  const handleSignOut = async () => {
+    setSigningOut(true)
+    await signOut({ callbackUrl: "/login" })
+  }
 
   return (
     <aside className="w-60 flex-shrink-0 bg-[var(--surface)] border-r border-[var(--line)] flex flex-col h-screen sticky top-0">
@@ -106,9 +114,14 @@ export function Sidebar() {
           <Settings className="w-4 h-4 text-[var(--ink-subtle)]" />
           Configuración
         </Link>
-        <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition-colors">
+        <button
+          type="button"
+          onClick={handleSignOut}
+          disabled={signingOut}
+          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger-soft)] transition-colors disabled:opacity-50"
+        >
           <LogOut className="w-4 h-4" />
-          Cerrar sesión
+          {signingOut ? "Cerrando sesión..." : "Cerrar sesión"}
         </button>
       </div>
     </aside>

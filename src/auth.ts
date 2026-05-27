@@ -44,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         nextUrl.pathname.startsWith("/alertas")
 
       if (isOnDashboard) {
-        if (isLoggedIn || isDemoMode()) return true
+        if (isLoggedIn) return true
         return false
       } else if (isLoggedIn && nextUrl.pathname === "/login") {
         return Response.redirect(new URL("/dashboard", nextUrl))
