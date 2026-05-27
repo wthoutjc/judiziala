@@ -2,8 +2,10 @@
 
 import { signIn } from "next-auth/react"
 import { useState } from "react"
-import { Scale, Globe, GitBranch } from "lucide-react"
+import { Scale, Globe, GitBranch, PlayCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+
+const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
 
 export default function LoginPage() {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null)
@@ -11,6 +13,11 @@ export default function LoginPage() {
   const handleSignIn = async (provider: string) => {
     setLoadingProvider(provider)
     await signIn(provider, { callbackUrl: "/dashboard" })
+  }
+
+  const handleDemo = async () => {
+    setLoadingProvider("demo")
+    await signIn("demo", { callbackUrl: "/dashboard" })
   }
 
   return (
@@ -66,14 +73,23 @@ export default function LoginPage() {
         </div>
 
         {/* Demo entry */}
-        <div className="mt-6 pt-6 border-t border-[var(--line)]">
-          <button
-            onClick={() => (window.location.href = "/dashboard")}
-            className="text-sm text-[var(--brand)] hover:text-[var(--brand-hover)] font-medium transition-colors"
-          >
-            Explorar demo sin cuenta &rarr;
-          </button>
-        </div>
+        {demoMode && (
+          <div className="mt-6 pt-6 border-t border-[var(--line)]">
+            <Button
+              variant="ghost"
+              className="w-full h-10 text-[var(--brand)] hover:text-[var(--brand-hover)] hover:bg-[var(--brand-soft)] font-medium text-sm gap-2"
+              onClick={handleDemo}
+              disabled={loadingProvider !== null}
+            >
+              {loadingProvider === "demo" ? (
+                <div className="w-4 h-4 border-2 border-[var(--line-strong)] border-t-[var(--brand)] rounded-full animate-spin" />
+              ) : (
+                <PlayCircle className="w-4 h-4" />
+              )}
+              Explorar demo sin cuenta
+            </Button>
+          </div>
+        )}
 
         {/* Footer */}
         <p className="text-xs text-[var(--ink-subtle)] mt-10 leading-relaxed">
