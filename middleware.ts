@@ -1,3 +1,4 @@
+// Revocation + expiry guards: auth.ts callbacks.authorized + session
 export { auth as middleware } from "./src/auth"
 
 export const config = {

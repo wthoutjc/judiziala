@@ -1,11 +1,10 @@
 "use client"
 
+import { isDemoMode } from "@/lib/demo-mode"
 import { signIn } from "next-auth/react"
 import { useState } from "react"
-import { Scale, Globe, GitBranch, PlayCircle } from "lucide-react"
+import { Scale, Globe, PlayCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
-const demoMode = process.env.NEXT_PUBLIC_DEMO_MODE === "true"
 
 export default function LoginPage() {
   const [loadingProvider, setLoadingProvider] = useState<string | null>(null)
@@ -41,8 +40,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* OAuth buttons */}
-        <div className="space-y-2.5">
+        <div>
           <Button
             variant="outline"
             className="w-full h-10 border-[var(--line-strong)] bg-[var(--surface)] hover:bg-[var(--sunken)] text-[var(--ink)] font-medium text-sm gap-3 cursor-pointer justify-start px-4"
@@ -56,24 +54,10 @@ export default function LoginPage() {
             )}
             <span>Continuar con Google</span>
           </Button>
-
-          <Button
-            variant="outline"
-            className="w-full h-10 border-[var(--line-strong)] bg-[var(--surface)] hover:bg-[var(--sunken)] text-[var(--ink)] font-medium text-sm gap-3 cursor-pointer justify-start px-4"
-            onClick={() => handleSignIn("github")}
-            disabled={loadingProvider !== null}
-          >
-            {loadingProvider === "github" ? (
-              <div className="w-4 h-4 border-2 border-[var(--line-strong)] border-t-[var(--brand)] rounded-full animate-spin" />
-            ) : (
-              <GitBranch className="w-4 h-4 text-[var(--ink-muted)]" />
-            )}
-            <span>Continuar con GitHub</span>
-          </Button>
         </div>
 
         {/* Demo entry */}
-        {demoMode && (
+        {isDemoMode() && (
           <div className="mt-6 pt-6 border-t border-[var(--line)]">
             <Button
               variant="ghost"

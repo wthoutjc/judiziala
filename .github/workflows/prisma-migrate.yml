@@ -1,0 +1,39 @@
+# Aplica migraciones Prisma contra Supabase (DIRECT_URL :5432).
+# Corre en paralelo con el deploy de Vercel; no incluir migrate en el build de Vercel.
+#
+# Secret requerido (Settings > Secrets > Actions): DIRECT_URL
+#
+# Migraciones breaking: ejecutar workflow_dispatch antes del merge o migrar en local
+# y esperar ~1 min antes de que Vercel sirva codigo nuevo.
+
+name: Prisma migrate deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "prisma/**"
+      - "prisma.config.ts"
+  workflow_dispatch:
+
+concurrency:
+  group: prisma-migrate-prod
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - name: prisma migrate deploy
+        run: npm run db:migrate:deploy
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}

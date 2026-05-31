@@ -119,11 +119,23 @@ export function Sidebar() {
       {/* Bottom section */}
       <div className="px-3 py-3 border-t border-[var(--line)] space-y-0.5">
         <Link
-          href="/settings"
+          href="/configuracion/sesiones"
           onClick={close}
-          className="flex items-center gap-2.5 px-2.5 py-2.5 lg:py-2 rounded-md text-sm text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--sunken)] transition-colors"
+          className={cn(
+            "flex items-center gap-2.5 px-2.5 py-2.5 lg:py-2 rounded-md text-sm transition-colors",
+            pathname.startsWith("/configuracion")
+              ? "bg-[var(--brand-soft)] text-[var(--brand-ink)] font-medium"
+              : "text-[var(--ink-muted)] hover:text-[var(--ink)] hover:bg-[var(--sunken)]"
+          )}
         >
-          <Settings className="w-4 h-4 text-[var(--ink-subtle)]" />
+          <Settings
+            className={cn(
+              "w-4 h-4",
+              pathname.startsWith("/configuracion")
+                ? "text-[var(--brand-ink)]"
+                : "text-[var(--ink-subtle)]"
+            )}
+          />
           Configuración
         </Link>
         <button
