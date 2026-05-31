@@ -1,0 +1,81 @@
+{
+  "actuaciones": [
+    {
+      "idRegActuacion": 3907933721,
+      "llaveProceso": "66001400300620240079700",
+      "consActuacion": 5,
+      "fechaActuacion": "2026-05-29T00:00:00",
+      "actuacion": "Auto Interlocutorio",
+      "anotacion": "AUTO REQUIERE PARA QUE IMPULSE EL PROCESO SO PENA 317 CGP\r\n",
+      "fechaInicial": null,
+      "fechaFinal": null,
+      "fechaRegistro": "2026-05-29T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 2298761021,
+      "llaveProceso": "66001400300620240079700",
+      "consActuacion": 4,
+      "fechaActuacion": "2025-09-23T00:00:00",
+      "actuacion": "Auto Interlocutorio",
+      "anotacion": "auto no valida notificacion requiere apoderado demandante",
+      "fechaInicial": null,
+      "fechaFinal": null,
+      "fechaRegistro": "2025-09-23T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1400080611,
+      "llaveProceso": "66001400300620240079700",
+      "consActuacion": 3,
+      "fechaActuacion": "2024-07-10T00:00:00",
+      "actuacion": "Auto Interlocutorio",
+      "anotacion": "ADMITE DEMANDA",
+      "fechaInicial": null,
+      "fechaFinal": null,
+      "fechaRegistro": "2024-07-11T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1394793071,
+      "llaveProceso": "66001400300620240079700",
+      "consActuacion": 2,
+      "fechaActuacion": "2024-06-26T00:00:00",
+      "actuacion": "Auto Interlocutorio",
+      "anotacion": "INADMITE DEMANDA",
+      "fechaInicial": null,
+      "fechaFinal": null,
+      "fechaRegistro": "2024-06-26T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1390737901,
+      "llaveProceso": "66001400300620240079700",
+      "consActuacion": 1,
+      "fechaActuacion": "2024-06-18T00:00:00",
+      "actuacion": "Reparto y Radicación",
+      "anotacion": "REPARTO Y RADICACION DEL PROCESO REALIZADAS EL martes, 18 de junio de 2024 con secuencia:  9510",
+      "fechaInicial": "2024-06-18T00:00:00",
+      "fechaFinal": "2024-06-18T00:00:00",
+      "fechaRegistro": "2024-06-18T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    }
+  ],
+  "paginacion": {
+    "cantidadRegistros": 5,
+    "registrosPagina": 40,
+    "cantidadPaginas": 1,
+    "pagina": 1,
+    "paginas": null
+  }
+}

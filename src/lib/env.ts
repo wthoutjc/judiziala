@@ -74,7 +74,15 @@ const envSchema = z
     AUTH_SECRET: z.string().min(16),
     AUTH_GOOGLE_ID: z.string().optional(),
     AUTH_GOOGLE_SECRET: z.string().optional(),
+    ANTHROPIC_API_KEY: z.string().min(1).optional(),
     NEXT_PUBLIC_DEMO_MODE: z.enum(["true", "false"]).optional(),
+    CPNU_BASE_URL: z.string().url().optional(),
+    CPNU_MAX_RPS: z.coerce.number().int().positive().optional(),
+    CPNU_CIRCUIT_FAILURE_THRESHOLD: z.coerce.number().int().positive().optional(),
+    CPNU_CIRCUIT_COOLDOWN_MS: z.coerce.number().int().positive().optional(),
+    CPNU_USER_RL_MAX: z.coerce.number().int().positive().optional(),
+    CPNU_USER_RL_WINDOW_MS: z.coerce.number().int().positive().optional(),
+    CPNU_METRICS_ENABLED: z.enum(["true", "false"]).optional(),
   })
   .superRefine((data, ctx) => {
     if (
@@ -116,6 +124,14 @@ const envSchema = z
       ctx.addIssue({
         code: "custom",
         path: ["AUTH_GOOGLE_SECRET"],
+        message: "Requerido cuando NEXT_PUBLIC_DEMO_MODE no es true",
+      })
+    }
+
+    if (!data.ANTHROPIC_API_KEY?.trim()) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["ANTHROPIC_API_KEY"],
         message: "Requerido cuando NEXT_PUBLIC_DEMO_MODE no es true",
       })
     }

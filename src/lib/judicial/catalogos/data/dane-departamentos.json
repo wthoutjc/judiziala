@@ -1,0 +1,234 @@
+[
+  {
+    "codigo": "05",
+    "nombre": "ANTIOQUIA",
+    "aliases": [
+      "antioquia"
+    ]
+  },
+  {
+    "codigo": "08",
+    "nombre": "ATLÁNTICO",
+    "aliases": [
+      "atlantico"
+    ]
+  },
+  {
+    "codigo": "11",
+    "nombre": "BOGOTÁ DC",
+    "aliases": [
+      "bogota dc",
+      "bogota"
+    ]
+  },
+  {
+    "codigo": "13",
+    "nombre": "BOLIVAR",
+    "aliases": [
+      "bolivar"
+    ]
+  },
+  {
+    "codigo": "15",
+    "nombre": "BOYACÁ",
+    "aliases": [
+      "boyaca"
+    ]
+  },
+  {
+    "codigo": "17",
+    "nombre": "CALDAS",
+    "aliases": [
+      "caldas"
+    ]
+  },
+  {
+    "codigo": "18",
+    "nombre": "CAQUETA",
+    "aliases": [
+      "caqueta"
+    ]
+  },
+  {
+    "codigo": "19",
+    "nombre": "CAUCA",
+    "aliases": [
+      "cauca"
+    ]
+  },
+  {
+    "codigo": "20",
+    "nombre": "CESAR",
+    "aliases": [
+      "cesar"
+    ]
+  },
+  {
+    "codigo": "23",
+    "nombre": "CORDOBA",
+    "aliases": [
+      "cordoba"
+    ]
+  },
+  {
+    "codigo": "25",
+    "nombre": "CUNDINAMARCA",
+    "aliases": [
+      "cundinamarca"
+    ]
+  },
+  {
+    "codigo": "27",
+    "nombre": "CHOCO",
+    "aliases": [
+      "choco"
+    ]
+  },
+  {
+    "codigo": "41",
+    "nombre": "HUILA",
+    "aliases": [
+      "huila"
+    ]
+  },
+  {
+    "codigo": "44",
+    "nombre": "LA GUAJIRA",
+    "aliases": [
+      "la guajira"
+    ]
+  },
+  {
+    "codigo": "47",
+    "nombre": "MAGDALENA",
+    "aliases": [
+      "magdalena"
+    ]
+  },
+  {
+    "codigo": "50",
+    "nombre": "META",
+    "aliases": [
+      "meta"
+    ]
+  },
+  {
+    "codigo": "52",
+    "nombre": "NARIÑO",
+    "aliases": [
+      "narino"
+    ]
+  },
+  {
+    "codigo": "54",
+    "nombre": "NORTE DE SANTANDER",
+    "aliases": [
+      "norte de santander"
+    ]
+  },
+  {
+    "codigo": "63",
+    "nombre": "QUINDIO",
+    "aliases": [
+      "quindio"
+    ]
+  },
+  {
+    "codigo": "66",
+    "nombre": "RISARALDA",
+    "aliases": [
+      "risaralda"
+    ]
+  },
+  {
+    "codigo": "68",
+    "nombre": "SANTANDER",
+    "aliases": [
+      "santander"
+    ]
+  },
+  {
+    "codigo": "70",
+    "nombre": "SUCRE",
+    "aliases": [
+      "sucre"
+    ]
+  },
+  {
+    "codigo": "73",
+    "nombre": "TOLIMA",
+    "aliases": [
+      "tolima"
+    ]
+  },
+  {
+    "codigo": "76",
+    "nombre": "VALLE DEL CAUCA",
+    "aliases": [
+      "valle del cauca"
+    ]
+  },
+  {
+    "codigo": "81",
+    "nombre": "ARAUCA",
+    "aliases": [
+      "arauca"
+    ]
+  },
+  {
+    "codigo": "85",
+    "nombre": "CASANARE",
+    "aliases": [
+      "casanare"
+    ]
+  },
+  {
+    "codigo": "86",
+    "nombre": "PUTUMAYO",
+    "aliases": [
+      "putumayo"
+    ]
+  },
+  {
+    "codigo": "88",
+    "nombre": "ARCHIPIELAGO DE SAN ANDRES",
+    "aliases": [
+      "archipielago de san andres"
+    ]
+  },
+  {
+    "codigo": "91",
+    "nombre": "AMAZONAS",
+    "aliases": [
+      "amazonas"
+    ]
+  },
+  {
+    "codigo": "94",
+    "nombre": "GUAINIA",
+    "aliases": [
+      "guainia"
+    ]
+  },
+  {
+    "codigo": "95",
+    "nombre": "GUAVIARE",
+    "aliases": [
+      "guaviare"
+    ]
+  },
+  {
+    "codigo": "97",
+    "nombre": "VAUPES",
+    "aliases": [
+      "vaupes"
+    ]
+  },
+  {
+    "codigo": "99",
+    "nombre": "VICHADA",
+    "aliases": [
+      "vichada"
+    ]
+  }
+]

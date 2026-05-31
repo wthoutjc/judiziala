@@ -1,0 +1,81 @@
+{
+  "actuaciones": [
+    {
+      "idRegActuacion": 1327525631,
+      "llaveProceso": "66001400300820230115800",
+      "consActuacion": 5,
+      "fechaActuacion": "2023-12-15T00:00:00",
+      "actuacion": "Fijación Estado",
+      "anotacion": "Actuación registrada el 15/12/2023 a las 08:43:39.",
+      "fechaInicial": "2023-12-18T00:00:00",
+      "fechaFinal": "2023-12-18T00:00:00",
+      "fechaRegistro": "2023-12-15T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1327525621,
+      "llaveProceso": "66001400300820230115800",
+      "consActuacion": 4,
+      "fechaActuacion": "2023-12-15T00:00:00",
+      "actuacion": "Auto inadmite demanda",
+      "anotacion": "Por auto del 11 de diciembre de 2023, notificado por estado el 12 de diciembre de esta anualidad, se inadmitó la demanda",
+      "fechaInicial": null,
+      "fechaFinal": null,
+      "fechaRegistro": "2023-12-15T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1327516141,
+      "llaveProceso": "66001400300820230115800",
+      "consActuacion": 3,
+      "fechaActuacion": "2023-12-15T00:00:00",
+      "actuacion": "Fijación Estado",
+      "anotacion": "Actuación registrada el 15/12/2023 a las 08:34:46.",
+      "fechaInicial": "2023-12-18T00:00:00",
+      "fechaFinal": "2023-12-18T00:00:00",
+      "fechaRegistro": "2023-12-15T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1327516131,
+      "llaveProceso": "66001400300820230115800",
+      "consActuacion": 2,
+      "fechaActuacion": "2023-12-15T00:00:00",
+      "actuacion": "Auto rechaza demanda",
+      "anotacion": "Por auto del 11 de diciembre de 2023, notificado por estado el 12 de diciembre de esta anualidad, se RECHAZÓ LA DEMANDA POR COMPETENCIA",
+      "fechaInicial": null,
+      "fechaFinal": null,
+      "fechaRegistro": "2023-12-15T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    },
+    {
+      "idRegActuacion": 1313288591,
+      "llaveProceso": "66001400300820230115800",
+      "consActuacion": 1,
+      "fechaActuacion": "2023-11-02T00:00:00",
+      "actuacion": "Reparto y Radicación",
+      "anotacion": "REPARTO Y RADICACION DEL PROCESO REALIZADAS EL jueves, 2 de noviembre de 2023 con secuencia:  14413",
+      "fechaInicial": "2023-11-02T00:00:00",
+      "fechaFinal": "2023-11-02T00:00:00",
+      "fechaRegistro": "2023-11-02T00:00:00",
+      "codRegla": "00                              ",
+      "conDocumentos": false,
+      "cant": 5
+    }
+  ],
+  "paginacion": {
+    "cantidadRegistros": 5,
+    "registrosPagina": 40,
+    "cantidadPaginas": 1,
+    "pagina": 1,
+    "paginas": null
+  }
+}

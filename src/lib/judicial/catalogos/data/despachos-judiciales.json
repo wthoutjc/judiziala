@@ -1,0 +1,386 @@
+[
+  {
+    "codDespachoCompleto": "110014009001",
+    "nombre": "Juzgado 1 Civil del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito bogota", "juzgado 1 civil circuito bogota", "primer juzgado civil circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014009002",
+    "nombre": "Juzgado 2 Civil del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 2 civil del circuito bogota", "segundo juzgado civil circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014009003",
+    "nombre": "Juzgado 3 Civil del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 3 civil del circuito bogota", "tercer juzgado civil circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014009004",
+    "nombre": "Juzgado 4 Civil del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 4 civil del circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014009005",
+    "nombre": "Juzgado 5 Civil del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 5 civil del circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014006001",
+    "nombre": "Juzgado 1 Civil Municipal de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "40",
+    "aliases": ["juzgado 1 civil municipal bogota", "primer juzgado civil municipal bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014006002",
+    "nombre": "Juzgado 2 Civil Municipal de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "40",
+    "aliases": ["juzgado 2 civil municipal bogota"]
+  },
+  {
+    "codDespachoCompleto": "110014006003",
+    "nombre": "Juzgado 3 Civil Municipal de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "40",
+    "aliases": ["juzgado 3 civil municipal bogota"]
+  },
+  {
+    "codDespachoCompleto": "110015109001",
+    "nombre": "Juzgado 1 Laboral del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 1 laboral del circuito bogota", "primer juzgado laboral circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110015109002",
+    "nombre": "Juzgado 2 Laboral del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 2 laboral del circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110015109003",
+    "nombre": "Juzgado 3 Laboral del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 3 laboral del circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110016009001",
+    "nombre": "Juzgado 1 Penal del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "60",
+    "aliases": ["juzgado 1 penal del circuito bogota", "primer juzgado penal circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110016009002",
+    "nombre": "Juzgado 2 Penal del Circuito de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "60",
+    "aliases": ["juzgado 2 penal del circuito bogota"]
+  },
+  {
+    "codDespachoCompleto": "110013109001",
+    "nombre": "Juzgado 1 Penal de Conocimiento de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 1 penal conocimiento bogota", "primer juzgado penal conocimiento bogota"]
+  },
+  {
+    "codDespachoCompleto": "110013109002",
+    "nombre": "Juzgado 2 Penal de Conocimiento de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 2 penal conocimiento bogota"]
+  },
+  {
+    "codDespachoCompleto": "110017009001",
+    "nombre": "Juzgado 1 de Familia de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "70",
+    "aliases": ["juzgado 1 de familia bogota", "primer juzgado de familia bogota", "juzgado 1 familia bogota"]
+  },
+  {
+    "codDespachoCompleto": "110017009002",
+    "nombre": "Juzgado 2 de Familia de Bogota",
+    "depto": "11",
+    "ciudad": "001",
+    "especialidad": "70",
+    "aliases": ["juzgado 2 de familia bogota"]
+  },
+  {
+    "codDespachoCompleto": "050014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito medellin", "primer juzgado civil circuito medellin"]
+  },
+  {
+    "codDespachoCompleto": "050014109002",
+    "nombre": "Juzgado 2 Civil del Circuito de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 2 civil del circuito medellin"]
+  },
+  {
+    "codDespachoCompleto": "050014109003",
+    "nombre": "Juzgado 3 Civil del Circuito de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 3 civil del circuito medellin"]
+  },
+  {
+    "codDespachoCompleto": "050014006001",
+    "nombre": "Juzgado 1 Civil Municipal de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "40",
+    "aliases": ["juzgado 1 civil municipal medellin"]
+  },
+  {
+    "codDespachoCompleto": "050015109001",
+    "nombre": "Juzgado 1 Laboral del Circuito de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 1 laboral del circuito medellin", "primer juzgado laboral circuito medellin"]
+  },
+  {
+    "codDespachoCompleto": "050015109002",
+    "nombre": "Juzgado 2 Laboral del Circuito de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 2 laboral del circuito medellin"]
+  },
+  {
+    "codDespachoCompleto": "050013109001",
+    "nombre": "Juzgado 1 Penal de Conocimiento de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 1 penal conocimiento medellin", "primer juzgado penal conocimiento medellin"]
+  },
+  {
+    "codDespachoCompleto": "050013109002",
+    "nombre": "Juzgado 2 Penal de Conocimiento de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 2 penal conocimiento medellin"]
+  },
+  {
+    "codDespachoCompleto": "050016009001",
+    "nombre": "Juzgado 1 Penal del Circuito de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "60",
+    "aliases": ["juzgado 1 penal del circuito medellin"]
+  },
+  {
+    "codDespachoCompleto": "050017009001",
+    "nombre": "Juzgado 1 de Familia de Medellin",
+    "depto": "05",
+    "ciudad": "001",
+    "especialidad": "70",
+    "aliases": ["juzgado 1 de familia medellin", "juzgado 1 familia medellin"]
+  },
+  {
+    "codDespachoCompleto": "760014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Cali",
+    "depto": "76",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito cali", "primer juzgado civil circuito cali"]
+  },
+  {
+    "codDespachoCompleto": "760014109002",
+    "nombre": "Juzgado 2 Civil del Circuito de Cali",
+    "depto": "76",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 2 civil del circuito cali"]
+  },
+  {
+    "codDespachoCompleto": "760015109001",
+    "nombre": "Juzgado 1 Laboral del Circuito de Cali",
+    "depto": "76",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 1 laboral del circuito cali"]
+  },
+  {
+    "codDespachoCompleto": "760013109001",
+    "nombre": "Juzgado 1 Penal de Conocimiento de Cali",
+    "depto": "76",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 1 penal conocimiento cali"]
+  },
+  {
+    "codDespachoCompleto": "760016009001",
+    "nombre": "Juzgado 1 Penal del Circuito de Cali",
+    "depto": "76",
+    "ciudad": "001",
+    "especialidad": "60",
+    "aliases": ["juzgado 1 penal del circuito cali"]
+  },
+  {
+    "codDespachoCompleto": "760017009001",
+    "nombre": "Juzgado 1 de Familia de Cali",
+    "depto": "76",
+    "ciudad": "001",
+    "especialidad": "70",
+    "aliases": ["juzgado 1 de familia cali", "juzgado 1 familia cali"]
+  },
+  {
+    "codDespachoCompleto": "080014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Barranquilla",
+    "depto": "08",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito barranquilla", "primer juzgado civil circuito barranquilla"]
+  },
+  {
+    "codDespachoCompleto": "080014109002",
+    "nombre": "Juzgado 2 Civil del Circuito de Barranquilla",
+    "depto": "08",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 2 civil del circuito barranquilla"]
+  },
+  {
+    "codDespachoCompleto": "080015109001",
+    "nombre": "Juzgado 1 Laboral del Circuito de Barranquilla",
+    "depto": "08",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 1 laboral del circuito barranquilla"]
+  },
+  {
+    "codDespachoCompleto": "080013109001",
+    "nombre": "Juzgado 1 Penal de Conocimiento de Barranquilla",
+    "depto": "08",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 1 penal conocimiento barranquilla"]
+  },
+  {
+    "codDespachoCompleto": "080017009001",
+    "nombre": "Juzgado 1 de Familia de Barranquilla",
+    "depto": "08",
+    "ciudad": "001",
+    "especialidad": "70",
+    "aliases": ["juzgado 1 de familia barranquilla", "juzgado 1 familia barranquilla"]
+  },
+  {
+    "codDespachoCompleto": "680014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Bucaramanga",
+    "depto": "68",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito bucaramanga"]
+  },
+  {
+    "codDespachoCompleto": "680015109001",
+    "nombre": "Juzgado 1 Laboral del Circuito de Bucaramanga",
+    "depto": "68",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 1 laboral del circuito bucaramanga"]
+  },
+  {
+    "codDespachoCompleto": "680013109001",
+    "nombre": "Juzgado 1 Penal de Conocimiento de Bucaramanga",
+    "depto": "68",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 1 penal conocimiento bucaramanga"]
+  },
+  {
+    "codDespachoCompleto": "130014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Cartagena",
+    "depto": "13",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito cartagena"]
+  },
+  {
+    "codDespachoCompleto": "130015109001",
+    "nombre": "Juzgado 1 Laboral del Circuito de Cartagena",
+    "depto": "68",
+    "ciudad": "001",
+    "especialidad": "51",
+    "aliases": ["juzgado 1 laboral del circuito cartagena"]
+  },
+  {
+    "codDespachoCompleto": "130013109001",
+    "nombre": "Juzgado 1 Penal de Conocimiento de Cartagena",
+    "depto": "13",
+    "ciudad": "001",
+    "especialidad": "31",
+    "aliases": ["juzgado 1 penal conocimiento cartagena"]
+  },
+  {
+    "codDespachoCompleto": "170014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Manizales",
+    "depto": "17",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito manizales"]
+  },
+  {
+    "codDespachoCompleto": "660014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Pereira",
+    "depto": "66",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito pereira"]
+  },
+  {
+    "codDespachoCompleto": "730014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Ibague",
+    "depto": "73",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito ibague"]
+  },
+  {
+    "codDespachoCompleto": "540014109001",
+    "nombre": "Juzgado 1 Civil del Circuito de Cucuta",
+    "depto": "54",
+    "ciudad": "001",
+    "especialidad": "41",
+    "aliases": ["juzgado 1 civil del circuito cucuta"]
+  }
+]

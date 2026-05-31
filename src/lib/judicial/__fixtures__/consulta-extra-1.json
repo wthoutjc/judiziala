@@ -1,0 +1,34 @@
+{
+  "tipoConsulta": "NumeroRadicacion",
+  "procesos": [
+    {
+      "idProceso": 174263411,
+      "idConexion": 137,
+      "llaveProceso": "66001400300620240079700",
+      "fechaProceso": "2024-06-18T00:00:00",
+      "fechaUltimaActuacion": "2026-05-29T00:00:00",
+      "despacho": "JUZGADO 006 CIVIL MUNICIPAL DE PEREIRA ",
+      "departamento": "RISARALDA",
+      "sujetosProcesales": "Demandante: SEBASTIAN LOPEZ GOMEZ | Demandado: MAURICIO GUARIN | Demandado: DEPORTIVO PEREIRA FC SA ",
+      "esPrivado": false,
+      "cantFilas": -1
+    }
+  ],
+  "parametros": {
+    "numero": "66001400300620240079700",
+    "nombre": null,
+    "tipoPersona": null,
+    "idSujeto": null,
+    "ponente": null,
+    "claseProceso": null,
+    "codificacionDespacho": null,
+    "soloActivos": false
+  },
+  "paginacion": {
+    "cantidadRegistros": 1,
+    "registrosPagina": 20,
+    "cantidadPaginas": 1,
+    "pagina": 1,
+    "paginas": null
+  }
+}

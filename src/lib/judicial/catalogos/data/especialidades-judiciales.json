@@ -1,0 +1,120 @@
+[
+  {
+    "codigo": "40",
+    "nombre": "Civil municipal",
+    "aliases": [
+      "civil municipal",
+      "civil"
+    ]
+  },
+  {
+    "codigo": "41",
+    "nombre": "Civil circuito",
+    "aliases": [
+      "civil circuito",
+      "civil del circuito"
+    ]
+  },
+  {
+    "codigo": "44",
+    "nombre": "Restitucion de tierras",
+    "aliases": [
+      "restitucion",
+      "tierras"
+    ]
+  },
+  {
+    "codigo": "46",
+    "nombre": "Pequenas causas",
+    "aliases": [
+      "pequenas causas",
+      "minimo cuantia"
+    ]
+  },
+  {
+    "codigo": "50",
+    "nombre": "Laboral municipal",
+    "aliases": [
+      "laboral municipal",
+      "laboral"
+    ]
+  },
+  {
+    "codigo": "51",
+    "nombre": "Laboral circuito",
+    "aliases": [
+      "laboral circuito"
+    ]
+  },
+  {
+    "codigo": "60",
+    "nombre": "Penal circuito",
+    "aliases": [
+      "penal",
+      "penales",
+      "penal circuito",
+      "penal del circuito"
+    ]
+  },
+  {
+    "codigo": "61",
+    "nombre": "Penal municipal",
+    "aliases": [
+      "penal municipal"
+    ]
+  },
+  {
+    "codigo": "62",
+    "nombre": "Penal especial",
+    "aliases": [
+      "penal especial",
+      "justicia y paz"
+    ]
+  },
+  {
+    "codigo": "63",
+    "nombre": "Ejecucion de penas",
+    "aliases": [
+      "ejecucion de penas",
+      "ejecucion penas"
+    ]
+  },
+  {
+    "codigo": "64",
+    "nombre": "Penal adolescentes",
+    "aliases": [
+      "penal adolescentes",
+      "adolescentes"
+    ]
+  },
+  {
+    "codigo": "70",
+    "nombre": "Familia",
+    "aliases": [
+      "familia",
+      "de familia"
+    ]
+  },
+  {
+    "codigo": "71",
+    "nombre": "Familia circuito",
+    "aliases": [
+      "familia circuito"
+    ]
+  },
+  {
+    "codigo": "72",
+    "nombre": "Familia especial",
+    "aliases": [
+      "familia especial"
+    ]
+  },
+  {
+    "codigo": "31",
+    "nombre": "Penal conocimiento",
+    "aliases": [
+      "penal conocimiento",
+      "conocimiento penal"
+    ]
+  }
+]

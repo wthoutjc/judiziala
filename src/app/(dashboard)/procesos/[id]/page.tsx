@@ -1,6 +1,5 @@
-import { Header } from "@/components/layout/header"
-import { Badge } from "@/components/ui/badge"
-import { mockProcesos, mockActuaciones } from "@/lib/mock-data"
+import Link from "next/link"
+import { notFound } from "next/navigation"
 import {
   MapPin,
   Users,
@@ -12,7 +11,17 @@ import {
   ExternalLink,
   ChevronLeft,
 } from "lucide-react"
-import Link from "next/link"
+import { Header } from "@/components/layout/header"
+import { Badge } from "@/components/ui/badge"
+import { requireSession } from "@/lib/auth/require-session"
+import { formatFechaJudicial, formatearRadicado } from "@/lib/judicial/display"
+import {
+  deriveJurisdiccion,
+  findSujetoPorRol,
+  listSujetosDisplay,
+} from "@/lib/judicial/model"
+import { procesoRepository } from "@/lib/judicial/repository"
+import { ProcesoRepositoryError } from "@/lib/judicial/repository.impl"
 
 const estadoActuacionConfig = {
   completado: {
@@ -49,29 +58,53 @@ const procesoEstadoConfig = {
     label: "Suspendido",
     className: "bg-[var(--warning-soft)] text-[var(--warning-ink)] border-[var(--warning-soft)]",
   },
+  archivado: {
+    label: "Archivado",
+    className: "bg-[var(--sunken)] text-[var(--ink-subtle)] border-[var(--line)]",
+  },
 }
 
-export default function ProcesoPage({ params }: { params: { id: string } }) {
-  const proceso = mockProcesos.find((p) => p.id === params.id) ?? mockProcesos[0]
-  const actuaciones = mockActuaciones.filter((a) => a.procesoId === proceso.id)
-  const cfg = procesoEstadoConfig[proceso.estado as keyof typeof procesoEstadoConfig]
+export default async function ProcesoPage({
+  params,
+}: {
+  params: Promise<{ id: string }>
+}) {
+  const { id } = await params
+  const session = await requireSession()
+
+  let detalle
+  try {
+    detalle = await procesoRepository.obtener(session.user.id, id)
+  } catch (error) {
+    if (error instanceof ProcesoRepositoryError && error.code === "NOT_MONITORED") {
+      notFound()
+    }
+    throw error
+  }
+
+  const { proceso, actuaciones } = detalle
+  const cfg = procesoEstadoConfig[proceso.estado]
+  const demandante = findSujetoPorRol(proceso.partes, "demandante")
+  const demandado = findSujetoPorRol(proceso.partes, "demandado")
+  const sujetosDisplay = listSujetosDisplay(proceso.partes)
+  const ultimaActuacion = actuaciones[0]
 
   const completadas = actuaciones.filter((a) => a.estado === "completado").length
   const pendientes = actuaciones.filter((a) => a.estado === "pendiente").length
+  const documentosIa = actuaciones.filter((a) => a.conDocumentos).length
+  const proximaPendiente = actuaciones.find((a) => a.estado === "pendiente" && a.fechaInicial)
 
   return (
     <>
       <Header title="Proceso" />
       <main className="flex-1 p-4 sm:p-6 max-w-[1280px] w-full">
-        {/* Back */}
         <Link
-          href="/dashboard"
+          href="/procesos"
           className="inline-flex items-center gap-1.5 text-xs text-[var(--ink-muted)] hover:text-[var(--ink)] mb-5 transition-colors"
         >
-          <ChevronLeft className="w-3.5 h-3.5" /> Volver al resumen
+          <ChevronLeft className="w-3.5 h-3.5" /> Volver a procesos
         </Link>
 
-        {/* Process header */}
         <div className="bg-[var(--surface)] border border-[var(--line)] rounded-xl p-6 mb-6">
           <div className="flex items-start justify-between flex-wrap gap-4">
             <div>
@@ -82,14 +115,18 @@ export default function ProcesoPage({ params }: { params: { id: string } }) {
                 >
                   {cfg.label}
                 </Badge>
-                <span className="text-xs text-[var(--ink-subtle)]">{proceso.jurisdiccion}</span>
+                <span className="text-xs text-[var(--ink-subtle)]">
+                  {deriveJurisdiccion(proceso)}
+                </span>
               </div>
               <h2 className="text-base font-semibold text-[var(--ink)] mb-1">
-                {proceso.partes.demandante}
+                {demandante?.nombre ?? "---"}
                 <span className="text-[var(--ink-subtle)] font-normal mx-2">vs.</span>
-                {proceso.partes.demandado}
+                {demandado?.nombre ?? "---"}
               </h2>
-              <p className="font-mono text-sm text-[var(--ink-muted)] tabular">{proceso.radicado}</p>
+              <p className="font-mono text-sm text-[var(--ink-muted)] tabular">
+                {formatearRadicado(proceso.radicado)}
+              </p>
             </div>
             <Link
               href="https://procesos.ramajudicial.gov.co"
@@ -116,93 +153,108 @@ export default function ProcesoPage({ params }: { params: { id: string } }) {
                 <p className="text-[10px] text-[var(--ink-subtle)] uppercase tracking-wide mb-0.5">
                   Partes
                 </p>
-                <p className="text-sm text-[var(--ink)]">{proceso.partes.demandante}</p>
-                <p className="text-xs text-[var(--ink-muted)]">{proceso.partes.demandado}</p>
+                <div className="space-y-1">
+                  {sujetosDisplay.slice(0, 4).map((sujeto) => (
+                    <p key={`${sujeto.rol}-${sujeto.nombre}`} className="text-sm text-[var(--ink)]">
+                      <span className="text-[var(--ink-muted)] text-xs">{sujeto.rolLabel}:</span>{" "}
+                      {sujeto.nombre}
+                    </p>
+                  ))}
+                  {sujetosDisplay.length > 4 && (
+                    <p className="text-xs text-[var(--ink-subtle)]">
+                      +{sujetosDisplay.length - 4} sujetos mas
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex items-start gap-2.5">
               <Calendar className="w-4 h-4 text-[var(--ink-subtle)] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-[10px] text-[var(--ink-subtle)] uppercase tracking-wide mb-0.5">
-                  Última actuación
+                  Ultima actuacion
                 </p>
-                <p className="text-sm text-[var(--ink)] tabular">{proceso.fechaUltimaActuacion}</p>
-                <p className="text-xs text-[var(--ink-muted)]">{proceso.ultimaActuacion}</p>
+                <p className="text-sm text-[var(--ink)] tabular">
+                  {formatFechaJudicial(proceso.fechaUltimaActuacion)}
+                </p>
+                <p className="text-xs text-[var(--ink-muted)]">
+                  {ultimaActuacion?.tipo ?? "Sin actuaciones registradas"}
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Timeline */}
           <div className="lg:col-span-2">
             <h3 className="text-sm font-semibold text-[var(--ink)] mb-4">Timeline procesal</h3>
-            <div className="relative">
-              {actuaciones.map((actuacion, idx) => {
-                const isLast = idx === actuaciones.length - 1
-                const stateCfg =
-                  estadoActuacionConfig[actuacion.estado as keyof typeof estadoActuacionConfig]
+            {actuaciones.length === 0 ? (
+              <p className="text-sm text-[var(--ink-subtle)]">Sin actuaciones importadas.</p>
+            ) : (
+              <div className="relative">
+                {actuaciones.map((actuacion, idx) => {
+                  const isLast = idx === actuaciones.length - 1
+                  const stateCfg = estadoActuacionConfig[actuacion.estado]
 
-                return (
-                  <div key={actuacion.id} className="flex gap-4">
-                    {/* Node and line */}
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={`w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 z-10 ${stateCfg.node}`}
-                      >
-                        {stateCfg.icon}
+                  return (
+                    <div key={actuacion.id} className="flex gap-4">
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`w-7 h-7 rounded-full border-2 flex items-center justify-center flex-shrink-0 z-10 ${stateCfg.node}`}
+                        >
+                          {stateCfg.icon}
+                        </div>
+                        {!isLast && (
+                          <div className={`w-px flex-1 min-h-[32px] ${stateCfg.line} mt-1`} />
+                        )}
                       </div>
-                      {!isLast && <div className={`w-px flex-1 min-h-[32px] ${stateCfg.line} mt-1`} />}
-                    </div>
 
-                    {/* Content */}
-                    <div className={`flex-1 min-w-0 ${isLast ? "pb-0" : "pb-7"}`}>
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-sm font-medium text-[var(--ink)]">
-                              {actuacion.tipo}
-                            </span>
-                            {actuacion.estado === "actual" && (
-                              <Badge className="text-[10px] h-4 px-1.5 bg-[var(--brand)] text-[oklch(0.99_0.004_250)] hover:bg-[var(--brand)] border-transparent">
-                                Última actuación
-                              </Badge>
-                            )}
-                            {actuacion.estado === "pendiente" && (
-                              <Badge
-                                variant="outline"
-                                className="text-[10px] h-4 px-1.5 text-[var(--ink-subtle)] border-[var(--line-strong)] bg-transparent"
-                              >
-                                Pendiente
-                              </Badge>
+                      <div className={`flex-1 min-w-0 ${isLast ? "pb-0" : "pb-7"}`}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-sm font-medium text-[var(--ink)]">
+                                {actuacion.tipo}
+                              </span>
+                              {actuacion.estado === "actual" && (
+                                <Badge className="text-[10px] h-4 px-1.5 bg-[var(--brand)] text-[oklch(0.99_0.004_250)] hover:bg-[var(--brand)] border-transparent">
+                                  Ultima actuacion
+                                </Badge>
+                              )}
+                              {actuacion.estado === "pendiente" && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-[10px] h-4 px-1.5 text-[var(--ink-subtle)] border-[var(--line-strong)] bg-transparent"
+                                >
+                                  Pendiente
+                                </Badge>
+                              )}
+                            </div>
+                            {actuacion.descripcion && (
+                              <p className="text-xs text-[var(--ink-muted)] mt-1 leading-relaxed">
+                                {actuacion.descripcion}
+                              </p>
                             )}
                           </div>
-                          <p className="text-xs text-[var(--ink-muted)] mt-1 leading-relaxed">
-                            {actuacion.descripcion}
-                          </p>
+                          <span className="text-xs text-[var(--ink-subtle)] flex-shrink-0 mt-0.5 tabular">
+                            {formatFechaJudicial(actuacion.fecha)}
+                          </span>
                         </div>
-                        <span className="text-xs text-[var(--ink-subtle)] flex-shrink-0 mt-0.5 tabular">
-                          {actuacion.fecha}
-                        </span>
-                      </div>
 
-                      {actuacion.documentoId && actuacion.estado !== "pendiente" && (
-                        <Link
-                          href={`/documentos/${actuacion.documentoId}`}
-                          className="inline-flex items-center gap-1.5 mt-2 text-xs text-[var(--brand)] hover:text-[var(--brand-hover)] font-medium"
-                        >
-                          <FileText className="w-3 h-3" />
-                          Ver documento con resumen IA
-                        </Link>
-                      )}
+                        {actuacion.conDocumentos && actuacion.estado !== "pendiente" && (
+                          <p className="inline-flex items-center gap-1.5 mt-2 text-xs text-[var(--brand)] font-medium">
+                            <FileText className="w-3 h-3" />
+                            Documento disponible (analisis IA proximamente)
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Sidebar info */}
           <div className="space-y-4">
             <div className="bg-[var(--surface)] border border-[var(--line)] rounded-xl p-5">
               <h4 className="text-xs font-semibold text-[var(--ink-muted)] uppercase tracking-wide mb-4">
@@ -213,7 +265,7 @@ export default function ProcesoPage({ params }: { params: { id: string } }) {
                   { label: "Total actuaciones", value: actuaciones.length },
                   { label: "Completadas", value: completadas },
                   { label: "Pendientes", value: pendientes },
-                  { label: "Documentos IA", value: 5 },
+                  { label: "Documentos IA", value: documentosIa },
                   { label: "Alertas activas", value: proceso.alertas },
                 ].map(({ label, value }) => (
                   <div key={label} className="flex justify-between items-baseline">
@@ -224,25 +276,22 @@ export default function ProcesoPage({ params }: { params: { id: string } }) {
               </div>
             </div>
 
-            <div className="bg-[var(--warning-soft)] border border-[var(--warning-soft)] rounded-xl p-5">
-              <div className="flex items-start gap-2.5">
-                <Clock className="w-4 h-4 text-[var(--warning-ink)] flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-xs font-semibold text-[var(--warning-ink)] mb-1">
-                    Próxima fecha
-                  </p>
-                  <p className="text-xs text-[var(--warning-ink)]">
-                    Audiencia de práctica de pruebas
-                  </p>
-                  <p className="text-sm font-bold text-[var(--warning-ink)] mt-1 tabular">
-                    10 de mayo de 2024
-                  </p>
-                  <p className="text-[11px] text-[var(--warning-ink)] opacity-80 mt-0.5 tabular">
-                    Faltan 5 días
-                  </p>
+            {proximaPendiente?.fechaInicial && (
+              <div className="bg-[var(--warning-soft)] border border-[var(--warning-soft)] rounded-xl p-5">
+                <div className="flex items-start gap-2.5">
+                  <Clock className="w-4 h-4 text-[var(--warning-ink)] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-xs font-semibold text-[var(--warning-ink)] mb-1">
+                      Proxima fecha
+                    </p>
+                    <p className="text-xs text-[var(--warning-ink)]">{proximaPendiente.tipo}</p>
+                    <p className="text-sm font-bold text-[var(--warning-ink)] mt-1 tabular">
+                      {formatFechaJudicial(proximaPendiente.fechaInicial)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </main>

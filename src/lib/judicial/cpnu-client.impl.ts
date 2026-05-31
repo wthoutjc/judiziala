@@ -2,6 +2,7 @@ import type { z } from "zod"
 import type { CpnuCircuitBreaker } from "./cpnu-circuit-breaker"
 import { buildCpnuCacheKey } from "./cpnu-cache-keys"
 import { CpnuError } from "./cpnu-error"
+import { logCpnuMetric } from "./cpnu-telemetry"
 import type { CpnuRateLimiter } from "./cpnu-rate-limit"
 import {
   cpnuIdProcesoInput,
@@ -169,15 +170,18 @@ export class CpnuClient {
     await this.config.rateLimiter?.acquire()
 
     const url = buildUrl(this.config.baseUrl, path, searchParams)
+    const startedAt = Date.now()
 
     try {
       const response = await this.requestWithRetry(url)
       const data = await this.parseJsonResponse(url, response)
       this.config.circuitBreaker?.recordSuccess()
+      logCpnuRequest(path, startedAt, "success")
       return data
     } catch (error) {
       if (error instanceof CpnuError) {
         this.config.circuitBreaker?.recordFailure(error)
+        logCpnuRequest(path, startedAt, "error", error)
       }
       throw error
     }
@@ -302,6 +306,22 @@ export function createCpnuClient(config?: CpnuClientConfig): CpnuClient {
 }
 
 export const cpnuClient = createCpnuClient()
+
+function logCpnuRequest(
+  endpoint: string,
+  startedAt: number,
+  outcome: "success" | "error",
+  error?: CpnuError
+): void {
+  logCpnuMetric({
+    metric: "cpnu.request",
+    outcome,
+    endpoint,
+    durationMs: Date.now() - startedAt,
+    code: error?.code,
+    status: error?.status,
+  })
+}
 
 function normalizeBaseUrl(baseUrl: string): string {
   return baseUrl.replace(/\/+$/, "")

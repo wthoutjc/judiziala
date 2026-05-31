@@ -36,6 +36,11 @@ test.describe("auth E2E", () => {
     await contextB.close()
   })
 
+  test("sin sesion /procesos redirige a /login", async ({ page }) => {
+    await page.goto("/procesos")
+    await expect(page).toHaveURL(/\/login/)
+  })
+
   test("logout-all revoca la sesion activa", async ({ browser }) => {
     const context = await browser.newContext()
 

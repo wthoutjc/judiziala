@@ -20,15 +20,17 @@ enum AccessAuditEvent {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String             @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String             @unique
   emailVerified DateTime?
   image         String?
-  role          Role      @default(ABOGADO)
+  role          Role               @default(ABOGADO)
   accounts      Account[]
   sessions      Session[]
-  createdAt     DateTime  @default(now())
+  monitoreos    MonitoreoProceso[]
+  alertas       Alerta[]
+  createdAt     DateTime           @default(now())
 }
 
 model Account {
@@ -95,4 +97,132 @@ model AccessAuditLog {
 
   @@index([userId, createdAt])
   @@index([event, createdAt])
+}
+
+enum RolSujeto {
+  demandante
+  demandado
+  fiscalia
+  defensor
+  apoderado_victima
+  numero_interno
+  otro
+}
+
+enum EstadoProceso {
+  activo
+  en_despacho
+  urgente
+  suspendido
+  archivado
+}
+
+enum EstadoActuacion {
+  completado
+  actual
+  pendiente
+}
+
+enum AlertaTipo {
+  urgente
+  info
+  advertencia
+}
+
+model Proceso {
+  id                   String        @id @default(cuid())
+  cpnuIdProceso        Int           @unique
+  cpnuIdConexion       Int
+  radicado             String        @unique @db.VarChar(23)
+  despacho             String
+  departamento         String
+  ponente              String?
+  tipoProceso          String?
+  claseProceso         String?
+  subclaseProceso      String?
+  recurso              String?
+  ubicacion            String?
+  esPrivado            Boolean       @default(false)
+  fechaRadicacion      DateTime
+  fechaUltimaActuacion DateTime
+  ultimaActualizacion  DateTime?
+  estado               EstadoProceso @default(activo)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  sujetos     Sujeto[]
+  actuaciones Actuacion[]
+  monitoreos  MonitoreoProceso[]
+  alertas     Alerta[]
+
+  @@index([estado])
+  @@index([fechaUltimaActuacion])
+}
+
+model Sujeto {
+  id        String    @id @default(cuid())
+  procesoId String
+  rol       RolSujeto
+  nombre    String
+  raw       String
+  proceso   Proceso   @relation(fields: [procesoId], references: [id], onDelete: Cascade)
+
+  @@index([procesoId])
+  @@index([procesoId, rol])
+}
+
+model Actuacion {
+  id            String          @id
+  procesoId     String
+  consActuacion Int
+  fecha         DateTime
+  tipo          String
+  descripcion   String?         @db.Text
+  fechaInicial  DateTime?
+  fechaFinal    DateTime?
+  fechaRegistro DateTime
+  conDocumentos Boolean         @default(false)
+  estado        EstadoActuacion @default(completado)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  proceso Proceso  @relation(fields: [procesoId], references: [id], onDelete: Cascade)
+  alertas Alerta[]
+
+  @@unique([procesoId, consActuacion])
+  @@index([procesoId, fecha])
+}
+
+model MonitoreoProceso {
+  id        String   @id @default(cuid())
+  userId    String
+  procesoId String
+  createdAt DateTime @default(now())
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proceso Proceso @relation(fields: [procesoId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, procesoId])
+  @@index([userId])
+}
+
+model Alerta {
+  id          String     @id @default(cuid())
+  userId      String
+  procesoId   String
+  radicado    String     @db.VarChar(23)
+  tipo        AlertaTipo
+  titulo      String
+  descripcion String     @db.Text
+  actuacionId String?
+  leida       Boolean    @default(false)
+  createdAt   DateTime   @default(now())
+
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  proceso   Proceso    @relation(fields: [procesoId], references: [id], onDelete: Cascade)
+  actuacion Actuacion? @relation(fields: [actuacionId], references: [id], onDelete: SetNull)
+
+  @@index([userId, leida])
+  @@index([userId, createdAt])
+  @@index([procesoId])
 }

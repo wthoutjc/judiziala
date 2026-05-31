@@ -7,6 +7,7 @@ export type CpnuErrorCode =
   | "NETWORK"
   | "PARSE"
   | "RATE_LIMITED"
+  | "USER_RATE_LIMITED"
   | "CIRCUIT_OPEN"
 
 export class CpnuError extends Error {
