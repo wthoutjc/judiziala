@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import { headers } from "next/headers"
 import type { Role } from "@/generated/prisma/enums"
+import { authConfig, handleRouteAuthorization } from "@/auth.config"
 import { extractSessionMetadata } from "@/lib/auth/session-metadata"
 import {
   getSessionExpiryFromRequest,
@@ -17,7 +18,7 @@ import { env } from "@/lib/env"
 const demoAuth = isDemoAuthEnabled()
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  trustHost: true,
+  ...authConfig,
   adapter: demoAuth ? undefined : createSingleSessionAdapter(db),
   providers: [
     Google({
@@ -42,9 +43,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         ]
       : []),
   ],
-  pages: {
-    signIn: "/login",
-  },
   events: {
     async signIn({ user }) {
       if (demoAuth) return
@@ -78,20 +76,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         }
       }
 
-      const isLoggedIn = !!auth?.user
-      const isOnDashboard =
-        nextUrl.pathname.startsWith("/dashboard") ||
-        nextUrl.pathname.startsWith("/procesos") ||
-        nextUrl.pathname.startsWith("/documentos") ||
-        nextUrl.pathname.startsWith("/alertas")
-
-      if (isOnDashboard) {
-        if (isLoggedIn) return true
-        return false
-      } else if (isLoggedIn && nextUrl.pathname === "/login") {
-        return Response.redirect(new URL("/dashboard", nextUrl))
-      }
-      return true
+      return handleRouteAuthorization({ auth, request })
     },
     jwt({ token, user }) {
       if (user) {
