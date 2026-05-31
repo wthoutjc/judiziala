@@ -16,8 +16,12 @@ export type SessionExpiryReason =
 
 export type SessionTimestamps = {
   revokedAt?: Date | null
-  expires: Date
-  lastSeenAt: Date
+  expires: Date | string
+  lastSeenAt: Date | string
+}
+
+function toTimestamp(value: Date | string): number {
+  return value instanceof Date ? value.getTime() : new Date(value).getTime()
 }
 
 export function getSessionExpiryReason(
@@ -26,8 +30,8 @@ export function getSessionExpiryReason(
 ): SessionExpiryReason {
   if (!session) return "missing"
   if (session.revokedAt != null) return "revoked"
-  if (session.expires.getTime() <= now) return "absolute"
-  if (session.lastSeenAt.getTime() + SESSION_IDLE_TIMEOUT_MS <= now) return "idle"
+  if (toTimestamp(session.expires) <= now) return "absolute"
+  if (toTimestamp(session.lastSeenAt) + SESSION_IDLE_TIMEOUT_MS <= now) return "idle"
   return "ok"
 }
 

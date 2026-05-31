@@ -29,8 +29,10 @@ async function handleHeartbeatResponse(response: Response): Promise<PingResult> 
     // sendBeacon or empty body
   }
 
-  await signOut({ callbackUrl: "/login" })
-  return "stop"
+  if (process.env.NODE_ENV === "development") {
+    console.warn("[heartbeat] 401 unauthorized — sesion no cerrada")
+  }
+  return "ok"
 }
 
 async function pingHeartbeat(): Promise<PingResult> {
@@ -90,7 +92,7 @@ async function runLeaderHeartbeat(signal: AbortSignal) {
   try {
     await navigator.locks.request(
       LOCK_NAME,
-      { ifAvailable: true, signal },
+      { ifAvailable: true },
       async (lock) => {
         if (!lock) return
         await leaderHeartbeatLoop(signal)

@@ -16,8 +16,11 @@ import {
   logOAuthSuccess,
 } from "@/lib/auth/auth-metrics"
 import {
+  getSessionExpiryForToken,
+  shouldInvalidateSession,
+} from "@/lib/auth/session-callback"
+import {
   getSessionExpiryFromRequest,
-  getSessionExpiryReason,
   SESSION_ABSOLUTE_MAX_AGE_SEC,
 } from "@/lib/auth/session-expiry"
 import { createSingleSessionAdapter } from "@/lib/auth/single-session"
@@ -156,22 +159,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       const adapterSession = session as typeof session & {
-        revokedAt?: Date | null
-        lastSeenAt?: Date
-        expires?: Date
+        sessionToken?: string
       }
 
-      const expiryReason = getSessionExpiryReason(
-        adapterSession.lastSeenAt && adapterSession.expires
-          ? {
-              revokedAt: adapterSession.revokedAt,
-              expires: adapterSession.expires,
-              lastSeenAt: adapterSession.lastSeenAt,
-            }
-          : null,
+      const expiryReason = await getSessionExpiryForToken(
+        adapterSession.sessionToken,
       )
 
-      if (expiryReason !== "ok") {
+      if (shouldInvalidateSession(expiryReason)) {
         return null as unknown as typeof session
       }
 

@@ -67,4 +67,17 @@ describe("getSessionExpiryReason", () => {
   it("devuelve missing cuando no hay sesion", () => {
     expect(getSessionExpiryReason(null, now)).toBe("missing")
   })
+
+  it("acepta expires y lastSeenAt como ISO string", () => {
+    expect(
+      getSessionExpiryReason(
+        {
+          revokedAt: null,
+          expires: new Date(now + 60 * 60 * 1000).toISOString(),
+          lastSeenAt: new Date(now - 5 * 60 * 1000).toISOString(),
+        },
+        now,
+      ),
+    ).toBe("ok")
+  })
 })

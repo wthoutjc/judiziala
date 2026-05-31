@@ -13,6 +13,25 @@ test.describe("auth E2E", () => {
     await context.close()
   })
 
+  test("tras login y heartbeat /procesos permanece autenticado", async ({
+    browser,
+  }) => {
+    const context = await browser.newContext()
+    const page = await context.newPage()
+
+    await loginBrowserContext(context)
+    await page.goto("/dashboard")
+    await expect(page).toHaveURL(/\/dashboard/)
+
+    const heartbeat = await context.request.post("/api/heartbeat")
+    expect(heartbeat.status()).toBe(204)
+
+    await page.goto("/procesos")
+    await expect(page).toHaveURL(/\/procesos/)
+
+    await context.close()
+  })
+
   test("sesion unica: segundo login revoca el primero", async ({ browser }) => {
     const contextA = await browser.newContext()
     const contextB = await browser.newContext()
