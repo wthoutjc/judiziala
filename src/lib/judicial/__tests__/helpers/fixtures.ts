@@ -4,6 +4,7 @@ import { join } from "node:path"
 export const CPNU_TEST_ID_PROCESO = 29498455
 export const CPNU_TEST_RADICADO = "05001600020620201819700"
 export const CPNU_TEST_NOMBRE = "EDIBER CEFERINO RINCON"
+export const CPNU_TEST_NOMBRE_NULL_FECHA = "Sebastian Lopez Gomez"
 
 const fixturesDir = join(__dirname, "..", "..", "__fixtures__")
 

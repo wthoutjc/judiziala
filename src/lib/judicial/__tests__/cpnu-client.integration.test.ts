@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   CPNU_TEST_ID_PROCESO,
   CPNU_TEST_NOMBRE,
+  CPNU_TEST_NOMBRE_NULL_FECHA,
   CPNU_TEST_RADICADO,
 } from "./helpers/fixtures"
 import { createLiveClient } from "./helpers/test-client"
@@ -35,6 +36,17 @@ describe.sequential("CpnuClient integracion live CPNU", () => {
 
     expect(data.actuaciones.length).toBeGreaterThan(0)
     expect(data.paginacion.pagina).toBe(1)
+  })
+
+  it("porNombre con fechaProceso null no falla validacion (Sebastian Lopez Gomez)", async () => {
+    const data = await client.porNombre(CPNU_TEST_NOMBRE_NULL_FECHA, "nat", {
+      soloActivos: true,
+    })
+
+    expect(data.procesos.length).toBeGreaterThan(0)
+    expect(
+      data.procesos.some((p) => p.fechaProceso === null && p.fechaUltimaActuacion)
+    ).toBe(true)
   })
 
   it("mantiene consistencia entre porRadicado y detalle", async () => {

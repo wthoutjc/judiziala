@@ -285,6 +285,57 @@ describe("procesos actions", () => {
     )
   })
 
+  it("consultarNLImpl acepta procesos CPNU con fechaProceso null", async () => {
+    const porNombre = vi.fn().mockResolvedValue({
+      procesos: [
+        {
+          idProceso: 176571201,
+          idConexion: 450,
+          llaveProceso: "11001400300320210012300",
+          fechaProceso: null,
+          fechaUltimaActuacion: "2024-06-10T00:00:00",
+          despacho: "JUZGADO 003 CIVIL DEL CIRCUITO DE BOGOTA",
+          departamento: "BOGOTA",
+          sujetosProcesales: "Demandado: SEBASTIAN LOPEZ GOMEZ",
+          esPrivado: false,
+          cantFilas: -1,
+        },
+      ],
+      paginacion: {
+        cantidadRegistros: 1,
+        registrosPagina: 20,
+        cantidadPaginas: 1,
+        pagina: 1,
+        paginas: null,
+      },
+    })
+
+    const result = await consultarNLImpl(
+      userId,
+      {
+        entidades: {
+          nombre: "Sebastian Lopez Gomez",
+          tipoPersona: "nat",
+        },
+        confianza: { nombre: 0.9 },
+        soloActivos: true,
+      },
+      createDeps({
+        cpnuClient: { porRadicado: vi.fn(), porNombre } as never,
+      })
+    )
+
+    expect(result.ok).toBe(true)
+    if (!result.ok) return
+    expect(result.procesos).toHaveLength(1)
+    expect(result.procesos[0]?.fechaRadicacion).toBe("2024-06-10T00:00:00")
+    expect(porNombre).toHaveBeenCalledWith(
+      "Sebastian Lopez Gomez",
+      "nat",
+      expect.objectContaining({ soloActivos: true })
+    )
+  })
+
   it("consultarNLImpl retorna NL_AMBIGUOUS sin radicado ni nombre", async () => {
     const result = await consultarNLImpl(
       userId,

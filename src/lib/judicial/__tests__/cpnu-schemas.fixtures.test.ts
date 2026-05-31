@@ -36,4 +36,13 @@ describe("CPNU schemas con fixtures reales", () => {
     expect(data.actuaciones.length).toBeGreaterThanOrEqual(13)
     expect(typeof data.actuaciones[0].conDocumentos).toBe("boolean")
   })
+
+  it("parsea consulta con fechaProceso null como devuelve CPNU", () => {
+    const data = parseConsultaResponse(loadFixture("consulta-nombre-null-fecha.json"))
+
+    expect(data.procesos).toHaveLength(2)
+    expect(data.procesos[0].fechaProceso).toBe("2020-12-21T00:00:00")
+    expect(data.procesos[1].fechaProceso).toBeNull()
+    expect(data.procesos[1].fechaUltimaActuacion).toBe("2024-06-10T00:00:00")
+  })
 })

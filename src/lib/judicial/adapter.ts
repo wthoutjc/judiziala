@@ -135,8 +135,8 @@ export function cpnuProcesoToProceso(
     ubicacion: trimCpnuText(detalle?.ubicacion),
     esPrivado: cpnu.esPrivado,
     partes: parseSujetosProcesales(cpnu.sujetosProcesales),
-    fechaRadicacion: cpnu.fechaProceso,
-    fechaUltimaActuacion: cpnu.fechaUltimaActuacion,
+    fechaRadicacion: cpnu.fechaProceso ?? cpnu.fechaUltimaActuacion ?? "",
+    fechaUltimaActuacion: cpnu.fechaUltimaActuacion ?? cpnu.fechaProceso ?? "",
     ultimaActualizacion: detalle?.ultimaActualizacion,
     estado: deriveEstadoProceso({
       ubicacion: trimCpnuText(detalle?.ubicacion),

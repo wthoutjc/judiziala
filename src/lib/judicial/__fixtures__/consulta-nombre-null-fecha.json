@@ -1,0 +1,46 @@
+{
+  "tipoConsulta": "NombreRazonSocial",
+  "procesos": [
+    {
+      "idProceso": 29498455,
+      "idConexion": 450,
+      "llaveProceso": "05001600020620201819700",
+      "fechaProceso": "2020-12-21T00:00:00",
+      "fechaUltimaActuacion": "2026-05-22T00:00:00",
+      "despacho": "JUZGADO 001 PENAL DEL CIRCUITO CON FUNCIÓN DE CONOCIMIENTO DE MEDELLÍN ",
+      "departamento": "ANTIOQUIA",
+      "sujetosProcesales": "Demandado: EDIBER CEFERINO RINCON",
+      "esPrivado": false,
+      "cantFilas": -1
+    },
+    {
+      "idProceso": 176571201,
+      "idConexion": 450,
+      "llaveProceso": "11001400300320210012300",
+      "fechaProceso": null,
+      "fechaUltimaActuacion": "2024-06-10T00:00:00",
+      "despacho": "JUZGADO 003 CIVIL DEL CIRCUITO DE BOGOTA",
+      "departamento": "BOGOTA",
+      "sujetosProcesales": "Demandante: TEST | Demandado: SEBASTIAN LOPEZ GOMEZ",
+      "esPrivado": false,
+      "cantFilas": -1
+    }
+  ],
+  "parametros": {
+    "numero": null,
+    "nombre": "Sebastian Lopez Gomez",
+    "tipoPersona": "nat",
+    "idSujeto": null,
+    "ponente": null,
+    "claseProceso": null,
+    "codificacionDespacho": null,
+    "soloActivos": true
+  },
+  "paginacion": {
+    "cantidadRegistros": 2,
+    "registrosPagina": 20,
+    "cantidadPaginas": 1,
+    "pagina": 1,
+    "paginas": null
+  }
+}

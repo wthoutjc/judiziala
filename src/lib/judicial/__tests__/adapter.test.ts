@@ -48,6 +48,18 @@ describe("adapter CPNU -> modelo", () => {
     expect(normalizeRolSujeto("Apoderado de la Victima")).toBe("apoderado_victima")
   })
 
+  it("usa fechaUltimaActuacion cuando fechaProceso es null", () => {
+    const cpnu = parseConsultaResponse(
+      loadFixture("consulta-nombre-null-fecha.json")
+    ).procesos[1]
+
+    const proceso = cpnuProcesoToProceso(cpnu)
+
+    expect(proceso.fechaRadicacion).toBe("2024-06-10T00:00:00")
+    expect(proceso.fechaUltimaActuacion).toBe("2024-06-10T00:00:00")
+    expect(proceso.cpnuIdProceso).toBe(176571201)
+  })
+
   it("ordena actuaciones por consActuacion descendente", () => {
     const { actuacionesCpnu } = loadAdapterFixtureCase(ADAPTER_FIXTURE_CASES[0])
     const shuffled = [...actuacionesCpnu].reverse()
