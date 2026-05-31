@@ -12,15 +12,19 @@ const protectedPrefixes = [
 export function handleRouteAuthorization({
   auth,
   request,
+  hasSessionCookie,
 }: {
   auth: { user?: unknown } | null
   request: { nextUrl: URL }
+  /** En Edge (middleware): presencia de cookie DB; evita decodificar JWT. */
+  hasSessionCookie?: boolean
 }): boolean | Response {
   const { nextUrl } = request
 
   if (nextUrl.pathname === "/sesion-cerrada") return true
 
-  const isLoggedIn = !!auth?.user
+  const isLoggedIn =
+    hasSessionCookie === true || (hasSessionCookie !== false && !!auth?.user)
   const isProtected = protectedPrefixes.some((prefix) =>
     nextUrl.pathname.startsWith(prefix),
   )

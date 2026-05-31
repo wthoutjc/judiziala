@@ -24,6 +24,26 @@ describe("handleRouteAuthorization", () => {
     ).toBe(true)
   })
 
+  it("permite rutas protegidas con cookie de sesion (Edge)", () => {
+    expect(
+      handleRouteAuthorization({
+        auth: null,
+        request: makeRequest("/procesos"),
+        hasSessionCookie: true,
+      })
+    ).toBe(true)
+  })
+
+  it("bloquea rutas protegidas sin cookie en Edge", () => {
+    expect(
+      handleRouteAuthorization({
+        auth: null,
+        request: makeRequest("/procesos"),
+        hasSessionCookie: false,
+      })
+    ).toBe(false)
+  })
+
   it("redirige /login a /dashboard si ya hay sesion", () => {
     const result = handleRouteAuthorization({
       auth: { user: { id: "user-1" } },
