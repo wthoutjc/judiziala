@@ -287,22 +287,62 @@ Para límites distribuidos entre instancias:
 
 ## 8. Variables de entorno
 
-Crear el archivo `.env.local` en la raíz del proyecto:
+Copiar [`.env.production.example`](.env.production.example) como referencia. En local, crear `.env.local` (no versionar).
+
+### Desarrollo (`.env.local`)
 
 ```env
-# NextAuth — genera un secreto con: openssl rand -base64 32
-AUTH_SECRET=tu-secreto-aqui
+# Auth
+AUTH_SECRET=                          # openssl rand -base64 32
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
 
-# Google OAuth — https://console.cloud.google.com/
-AUTH_GOOGLE_ID=tu-google-client-id
-AUTH_GOOGLE_SECRET=tu-google-client-secret
+# Supabase — runtime pooler :6543
+DATABASE_URL=postgresql://...@...pooler.supabase.com:6543/postgres?pgbouncer=true
+# Migraciones locales/CI — directo :5432
+DIRECT_URL=postgresql://...@...supabase.com:5432/postgres
 
-# Modo demo para desarrollo sin OAuth configurado
-NEXT_PUBLIC_DEMO_MODE=true
+# Demo JWT local (opcional; desactivar para probar sesiones DB)
+NEXT_PUBLIC_DEMO_MODE=false
 ```
 
-**URL de callback OAuth para desarrollo local:**
-- Google: `http://localhost:3000/api/auth/callback/google`
+### Producción (Vercel Environment Variables)
+
+```env
+AUTH_URL=https://judiziala.co
+AUTH_SECRET=
+AUTH_GOOGLE_ID=
+AUTH_GOOGLE_SECRET=
+NEXT_PUBLIC_DEMO_MODE=false
+DATABASE_URL=                         # pooler :6543 + pgbouncer=true
+```
+
+`DIRECT_URL` solo en **CI/local** para `prisma migrate deploy` — no en runtime Vercel.
+
+Variables opcionales de hardening: `AUTH_RL_*` (rate-limit), `AUTH_METRICS_ENABLED`, `AUTH_OBS_*` (smoke observabilidad). **Nunca** `E2E_ENABLED` en prod.
+
+### OAuth Google (GCP)
+
+| Entorno | Redirect URI |
+|---|---|
+| Local | `http://localhost:3000/api/auth/callback/google` |
+| Prod | `https://judiziala.co/api/auth/callback/google` |
+
+JavaScript origins: `http://localhost:3000`, `https://judiziala.co`.
+
+Validación al arrancar: [`src/lib/env.ts`](src/lib/env.ts) (Zod).
+
+### Base de datos
+
+```bash
+# Generar cliente Prisma
+npx prisma generate
+
+# Aplicar migraciones (usa DIRECT_URL)
+npm run db:migrate:deploy
+```
+
+Runtime de la app usa **solo** `DATABASE_URL` (pooler). No usar pooler para DDL.
 
 ---
 
@@ -356,8 +396,7 @@ portal-web/
 npm install
 
 # 2. Configurar variables de entorno
-cp .env.local.example .env.local
-# Editar .env.local con tus credenciales OAuth
+# Crear .env.local (ver §8): DATABASE_URL, DIRECT_URL, AUTH_SECRET, Google OAuth
 
 # 3. Iniciar el servidor de desarrollo
 npm run dev
@@ -417,7 +456,7 @@ Las siguientes funcionalidades están planificadas para fases posteriores al MVP
 | Fase | Funcionalidad |
 |---|---|
 | v0.2 | Integración con API de la Rama Judicial (scraping real) |
-| v0.2 | Base de datos (PostgreSQL + Prisma) para persistencia |
+| — | Base de datos auth (Supabase + Prisma) — implementado |
 | v0.3 | Procesamiento real de documentos PDF con IA (OpenAI / Anthropic) |
 | v0.3 | Sistema de notificaciones por email y WhatsApp |
 | v0.4 | Agregar e importar procesos por radicado |
