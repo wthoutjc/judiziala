@@ -1,9 +1,12 @@
 import "server-only"
 
+import { auditIpChange } from "@/lib/auth/audit"
+import { extractSessionMetadata } from "@/lib/auth/session-metadata"
 import { readSessionTokenFromRequest } from "@/lib/auth/session-revocation"
 import { getSessionExpiryReason } from "@/lib/auth/session-expiry"
 import { isDemoAuthEnabled } from "@/lib/demo-mode"
 import { db } from "@/lib/db"
+import { env } from "@/lib/env"
 
 export type HeartbeatStatus =
   | "ok"
@@ -20,7 +23,15 @@ export async function runHeartbeat(request: Request): Promise<HeartbeatStatus> {
 
   const session = await db.session.findUnique({
     where: { sessionToken },
-    select: { revokedAt: true, expires: true, lastSeenAt: true },
+    select: {
+      id: true,
+      userId: true,
+      revokedAt: true,
+      expires: true,
+      lastSeenAt: true,
+      ipHash: true,
+      device: true,
+    },
   })
 
   if (!session) return "unauthorized"
@@ -40,9 +51,34 @@ export async function runHeartbeat(request: Request): Promise<HeartbeatStatus> {
       break
   }
 
+  const metadata = extractSessionMetadata(request.headers, env.AUTH_SECRET)
+  const now = new Date()
+
+  if (
+    metadata.ipHash &&
+    session.ipHash &&
+    metadata.ipHash !== session.ipHash
+  ) {
+    await auditIpChange({
+      userId: session.userId,
+      sessionId: session.id,
+      ipHash: metadata.ipHash,
+      device: metadata.device ?? session.device,
+      reason: "heartbeat_ip_change",
+      metadata: {
+        previousIpHash: session.ipHash,
+        newIpHash: metadata.ipHash,
+      },
+    })
+  }
+
   await db.session.update({
     where: { sessionToken },
-    data: { lastSeenAt: new Date() },
+    data: {
+      lastSeenAt: now,
+      ...(metadata.ipHash ? { ipHash: metadata.ipHash } : {}),
+      ...(metadata.device ? { device: metadata.device } : {}),
+    },
   })
 
   return "ok"

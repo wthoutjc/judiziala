@@ -12,6 +12,13 @@ enum Role {
   ABOGADO
 }
 
+enum AccessAuditEvent {
+  LOGIN
+  DENY
+  REVOKE
+  IP_CHANGE
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -72,4 +79,20 @@ model Allowlist {
   note      String?
   addedBy   String?
   createdAt DateTime @default(now())
+}
+
+model AccessAuditLog {
+  id        String           @id @default(cuid())
+  event     AccessAuditEvent
+  userId    String?
+  email     String?
+  sessionId String?
+  ipHash    String?
+  device    String?
+  reason    String?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, createdAt])
+  @@index([event, createdAt])
 }

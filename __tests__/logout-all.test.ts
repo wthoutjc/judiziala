@@ -5,8 +5,13 @@ vi.mock("@/lib/demo-mode", () => ({
   isDemoAuthEnabled: () => false,
 }))
 
-const { findUnique, updateMany } = vi.hoisted(() => ({
+vi.mock("@/lib/auth/audit", () => ({
+  auditRevoke: vi.fn(async () => undefined),
+}))
+
+const { findUnique, findMany, updateMany } = vi.hoisted(() => ({
   findUnique: vi.fn(),
+  findMany: vi.fn(),
   updateMany: vi.fn(),
 }))
 
@@ -14,6 +19,7 @@ vi.mock("@/lib/db", () => ({
   db: {
     session: {
       findUnique,
+      findMany,
       updateMany,
     },
   },
@@ -34,6 +40,7 @@ function mockRequest(cookie?: string) {
 describe("logoutAllSessions", () => {
   beforeEach(() => {
     findUnique.mockReset()
+    findMany.mockReset()
     updateMany.mockReset()
   })
 
@@ -55,6 +62,7 @@ describe("logoutAllSessions", () => {
 
   it("revoca todas las sesiones activas del usuario", async () => {
     findUnique.mockResolvedValue({ userId: "user-1" })
+    findMany.mockResolvedValue([{ id: "s1" }, { id: "s2" }])
     updateMany.mockResolvedValue({ count: 2 })
 
     const result = await logoutAllSessions(

@@ -39,7 +39,7 @@ Sistema inteligente de monitoreo de procesos judiciales colombianos con análisi
 | Jurisdicción | Procesos civiles, laborales y administrativos ante la Rama Judicial colombiana |
 | Fuente de datos | Portal `procesos.ramajudicial.gov.co` (scraping / integración futura) |
 | Diferenciador IA | Resumen de autos, extracción de fechas procesales, detección de riesgos y próximos pasos |
-| Fase actual | MVP navegable con datos de ejemplo (sin backend real) |
+| Fase actual | Auth prod (Google + sesiones DB); UI MVP con datos de ejemplo en dashboard |
 
 ---
 
@@ -51,7 +51,9 @@ Sistema inteligente de monitoreo de procesos judiciales colombianos con análisi
 | Lenguaje | TypeScript | 5.x |
 | Estilos | Tailwind CSS v4 | 4.x |
 | Componentes | shadcn/ui | 4.x |
-| Autenticación | NextAuth v5 (beta) | 5.0.0-beta |
+| Autenticación | NextAuth v5 (Auth.js) + Prisma Adapter | 5.0.0-beta |
+| Base de datos | Supabase Postgres + Prisma | 7.x |
+| Hosting prod | Vercel (`judiziala.co`) | — |
 | Iconografía | Lucide React | latest |
 | Gráficas | Recharts | latest |
 | Fechas | date-fns | latest |
@@ -64,21 +66,22 @@ Sistema inteligente de monitoreo de procesos judiciales colombianos con análisi
 ```
 app/
   (auth)/
-    login/                   Pantalla de inicio de sesión OAuth
+    login/                         OAuth Google
+    sesion-cerrada/                Sesión revocada (otro dispositivo)
   (dashboard)/
-    layout.tsx               Layout protegido: sidebar + header
-    dashboard/               Resumen ejecutivo y alertas recientes
-    procesos/
-      page.tsx               Lista de todos los procesos monitoreados
-      [id]/page.tsx          Vista detallada: timeline procesal
-    documentos/
-      [id]/page.tsx          Vista PDF + panel de análisis IA
-    alertas/                 Centro de notificaciones y alertas
+    layout.tsx                     Protegido: sidebar + header
+    dashboard/                     Resumen ejecutivo
+    procesos/                      Lista y detalle de procesos
+    documentos/                    Visor + análisis IA
+    alertas/                       Centro de notificaciones
+    configuracion/sesiones/        Sesión activa + cerrar en todos lados
   api/
-    auth/[...nextauth]/      Handlers de NextAuth v5
+    auth/[...nextauth]/            NextAuth v5 handlers
+    heartbeat/                     POST latido de presencia
+    session/                       GET sesión actual; POST logout-all
 ```
 
-Las rutas bajo `(dashboard)` están protegidas por middleware. Cualquier visita sin sesión activa redirige automáticamente a `/login`.
+Las rutas bajo `(dashboard)` están protegidas por [`middleware.ts`](middleware.ts). Sin sesión válida → `/login`.
 
 ---
 
@@ -160,21 +163,125 @@ Todos los colores se definen como variables CSS en `src/app/globals.css` bajo el
 
 ## 7. Autenticación OAuth
 
-El proyecto usa **NextAuth v5** con estrategia JWT (sin base de datos en el MVP).
+Producción en **https://judiziala.co** (Vercel) con **NextAuth v5**, proveedor **Google únicamente** y **sesiones en base de datos** (Supabase Postgres vía Prisma). No JWT en prod.
 
-### Proveedores configurados
-- **Google OAuth** — único proveedor OAuth (producción y desarrollo)
+### Proveedores
+
+| Entorno | Provider | Estrategia de sesión |
+|---|---|---|
+| **Producción** | Google OAuth | `database` (tabla `Session`) |
+| **Desarrollo** | Google OAuth | `database` |
+| **Dev + demo** | Google + Credentials `demo` | JWT solo si `NEXT_PUBLIC_DEMO_MODE=true` |
+
+GitHub OAuth fue retirado. Demo/Credentials **no** se despliegan en producción (`NEXT_PUBLIC_DEMO_MODE=false`).
+
+### Sesiones DB y sesión única
+
+- Cookie `authjs.session-token` → fila en `Session` (Prisma Adapter).
+- **Sesión única:** un nuevo login revoca las anteriores del mismo usuario (`revokedAt`).
+- Metadatos por sesión: `userAgent`, `ipHash` (nunca IP en claro), `device`, `lastSeenAt`.
+- Expiración: **idle 30 min** sin heartbeat, **absoluta 12 h** (`expires`).
+- Auditoría en tabla `AccessAuditLog`: login, deny, revoke, cambio IP (`src/lib/auth/audit.ts`).
+
+### Heartbeat de presencia
+
+Cliente [`heartbeat-provider.tsx`](src/components/auth/heartbeat-provider.tsx):
+
+- Latido cada **~45 s** solo con pestaña visible (Page Visibility API).
+- Una pestaña líder emite el ping (Web Locks API).
+- `sendBeacon` al cerrar pestaña.
+
+| Método | Endpoint | Función |
+|---|---|---|
+| POST | `/api/heartbeat` | Actualiza `lastSeenAt`; `401` si revocada/idle/expirada |
+| GET | `/api/session` | Sesión actual (dispositivo, última actividad) |
+| POST | `/api/session/logout-all` | Revoca todas las sesiones del usuario |
+
+Si el heartbeat detecta `session_revoked` → `signOut()` y redirige a `/sesion-cerrada`.
+
+### Cookies seguras
+
+En prod (`AUTH_URL=https://…`): `HttpOnly`, `Secure`, `SameSite=Lax` — ver [`secure-cookies.ts`](src/lib/auth/secure-cookies.ts).
 
 ### Archivos clave
 
 | Archivo | Descripción |
 |---|---|
-| `src/auth.ts` | Configuración central: providers, callbacks, session strategy |
-| `middleware.ts` | Protección de rutas (ejecuta en el Edge Runtime) |
-| `src/app/api/auth/[...nextauth]/route.ts` | Route handler de NextAuth |
+| [`src/auth.ts`](src/auth.ts) | Providers, adapter, callbacks, eventos, cookies |
+| [`src/auth.config.ts`](src/auth.config.ts) | Config Edge-safe para middleware |
+| [`middleware.ts`](middleware.ts) | Protección de rutas + rate-limit API auth/heartbeat |
+| [`src/lib/auth/single-session.ts`](src/lib/auth/single-session.ts) | Adapter: revoca sesiones previas al crear una nueva |
+| [`src/lib/auth/heartbeat.ts`](src/lib/auth/heartbeat.ts) | Lógica del latido |
+| [`src/lib/auth/audit.ts`](src/lib/auth/audit.ts) | Auditoría de accesos |
+| [`prisma/schema.prisma`](prisma/schema.prisma) | `User`, `Session`, `AccessAuditLog`, `Allowlist` |
 
-### Modo demo (desarrollo sin OAuth)
-Si `NEXT_PUBLIC_DEMO_MODE=true` en `.env.local`, la pantalla de login muestra un enlace de acceso directo que omite OAuth. Útil para desarrollo local sin credenciales configuradas.
+### Modo demo (solo desarrollo local)
+
+Con `NEXT_PUBLIC_DEMO_MODE=true`, login muestra acceso demo (JWT, sin sesiones DB). No usar para probar sesión única ni heartbeat.
+
+### Despliegue (Vercel + Supabase)
+
+| Componente | Dónde |
+|---|---|
+| App Next.js | Vercel → `judiziala.co` |
+| Postgres | Supabase (pooler `:6543` runtime, directo `:5432` migraciones) |
+| OAuth Google | GCP Console (redirect URIs prod + local) |
+| Secretos | Vercel Environment Variables (Sensitive) |
+| Migraciones | GitHub Actions [`.github/workflows/prisma-migrate.yml`](.github/workflows/prisma-migrate.yml) |
+
+Scripts de verificación: `npm run verify:oauth-prod`, `verify:supabase-prod`, `verify:auth-observability`.
+
+### Rate limiting (MVP)
+
+El middleware aplica límites in-memory en Edge para reducir abuso de endpoints sensibles:
+
+| Bucket | Rutas | Límite | Ventana |
+|---|---|---|---|
+| `heartbeat` | `POST /api/heartbeat` | 4 req | 60 s |
+| `auth` | `/api/auth/signin`, `callback`, `csrf`, `providers`, `error` | 20 req | 10 min |
+
+Respuesta al exceder el límite: `429` con `{ "error": "rate_limited" }` y header `Retry-After`.
+
+Variables opcionales: `AUTH_RL_HEARTBEAT_MAX`, `AUTH_RL_HEARTBEAT_WINDOW_MS`, `AUTH_RL_AUTH_MAX`, `AUTH_RL_AUTH_WINDOW_MS`.
+
+**Limitación:** en Vercel cada instancia Edge mantiene su propio contador (no es global). Mitiga bots simples y spam casual; no sustituye protección DDoS.
+
+### Observabilidad auth (free tier)
+
+Métricas estructuradas en JSON vía `src/lib/auth/auth-metrics.ts` (sin Vercel Pro ni Supabase Pro):
+
+| Métrica | Cuándo |
+|---|---|
+| `auth.oauth` | Login OK, deny (allowlist), errores NextAuth |
+| `auth.heartbeat` | Cada POST con `durationMs` y `status` |
+| `auth.rate_limit` | Respuesta 429 del middleware |
+
+Activo en `NODE_ENV=production`. En dev: `AUTH_METRICS_ENABLED=true`.
+
+**Ver logs:** Vercel Dashboard → Logs → filtrar `"metric":"auth.heartbeat"` o `"metric":"auth.oauth"`. Retención corta en plan Hobby.
+
+**Smoke p95 post-deploy:**
+
+```bash
+npm run verify:auth-observability
+# local: AUTH_OBS_BASE_URL=http://localhost:3000 npm run verify:auth-observability
+```
+
+Variables opcionales: `AUTH_OBS_BASE_URL`, `AUTH_OBS_SAMPLES` (default 20), `AUTH_OBS_P95_MAX_MS` (default 800).
+
+Eventos de negocio (login/deny/revoke/IP) siguen en tabla `AccessAuditLog` (5.3); consultables con SQL en Supabase free.
+
+**Evolución post-MVP:** Vercel Pro + Log Drain (Axiom) para p95 histórico y alertas.
+
+### Evolución — Upstash Redis (post-MVP)
+
+Para límites distribuidos entre instancias:
+
+1. Crear base Redis en [Upstash](https://upstash.com/) (región cercana al deploy Vercel).
+2. Instalar `@upstash/ratelimit` y `@upstash/redis`.
+3. Añadir env vars `UPSTASH_REDIS_REST_URL` y `UPSTASH_REDIS_REST_TOKEN` en Vercel.
+4. En `src/lib/auth/edge-rate-limit.ts`, reemplazar el `Map` in-memory por `Ratelimit.slidingWindow()`; mantener fallback in-memory si faltan las env vars.
+5. Verificar con curls repetidos (5 POST a `/api/heartbeat` → el 5.º debe devolver 429).
 
 ---
 
@@ -260,6 +367,22 @@ La aplicación estará disponible en `http://localhost:3000`.
 
 Para ingresar sin OAuth configurado, activar `NEXT_PUBLIC_DEMO_MODE=true` y usar el enlace de acceso demo en la pantalla de login.
 
+### Tests E2E auth
+
+Requiere Supabase dev configurada en `.env.local` (`DATABASE_URL`, `AUTH_SECRET`, credenciales Google).
+
+```bash
+# Instalar navegador (una vez)
+npx playwright install chromium
+
+# Ejecutar suite auth (arranca dev con E2E_ENABLED=true)
+npm run test:e2e
+```
+
+La suite usa `e2e@judiziala.local` y limpia datos al inicio (`e2e/global-setup.ts`). Mock de Google vía `POST /api/e2e/mock-google-login` (solo con `E2E_ENABLED=true`, nunca en prod).
+
+CI manual: workflow `.github/workflows/e2e-auth.yml` (`workflow_dispatch`).
+
 ### Scripts disponibles
 
 | Comando | Descripción |
@@ -268,6 +391,9 @@ Para ingresar sin OAuth configurado, activar `NEXT_PUBLIC_DEMO_MODE=true` y usar
 | `npm run build` | Compilar para producción |
 | `npm run start` | Iniciar servidor de producción |
 | `npm run lint` | Verificar reglas de ESLint |
+| `npm run test` | Tests unitarios (Vitest) |
+| `npm run test:e2e` | Tests E2E auth (Playwright) |
+| `npm run test:e2e:ui` | Playwright UI mode |
 
 ---
 

@@ -3,6 +3,7 @@ import "server-only"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import type { Adapter } from "@auth/core/adapters"
 import type { PrismaClient } from "@/generated/prisma/client"
+import { auditRevoke } from "@/lib/auth/audit"
 import { getSessionExpiryReason } from "@/lib/auth/session-expiry"
 
 export function createSingleSessionAdapter(prisma: PrismaClient): Adapter {
@@ -40,19 +41,41 @@ export function createSingleSessionAdapter(prisma: PrismaClient): Adapter {
     async createSession(data) {
       const now = new Date()
 
-      return prisma.$transaction(async (tx) => {
+      const revokedSessions = await prisma.$transaction(async (tx) => {
+        const sessionsToRevoke = await tx.session.findMany({
+          where: { userId: data.userId, revokedAt: null },
+          select: { id: true },
+        })
+
         await tx.session.updateMany({
           where: { userId: data.userId, revokedAt: null },
           data: { revokedAt: now },
         })
 
-        return tx.session.create({
+        await tx.session.create({
           data: {
             sessionToken: data.sessionToken,
             userId: data.userId,
             expires: data.expires,
           },
         })
+
+        return sessionsToRevoke
+      })
+
+      if (revokedSessions.length > 0) {
+        await auditRevoke({
+          userId: data.userId,
+          reason: "single_session",
+          metadata: {
+            revokedSessionIds: revokedSessions.map((session) => session.id),
+            revokedCount: revokedSessions.length,
+          },
+        })
+      }
+
+      return prisma.session.findUniqueOrThrow({
+        where: { sessionToken: data.sessionToken },
       })
     },
   }

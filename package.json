@@ -11,11 +11,14 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "test:judicial": "vitest run src/lib/judicial/__tests__",
     "verify:supabase-auth": "node scripts/verify-supabase-auth.mjs",
     "verify:supabase-prod": "node scripts/verify-supabase-prod.mjs",
     "verify:session-presence": "node scripts/verify-session-presence.mjs",
     "verify:oauth-prod": "node scripts/verify-oauth-prod.mjs",
+    "verify:auth-observability": "node scripts/verify-auth-observability.mjs",
     "setup:github-migrate-secret": "node scripts/print-github-migrate-setup.mjs"
   },
   "dependencies": {
@@ -40,6 +43,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/pg": "^8.20.0",

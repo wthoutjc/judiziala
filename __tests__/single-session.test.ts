@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest"
 
 vi.mock("server-only", () => ({}))
+vi.mock("@/lib/auth/audit", () => ({
+  auditRevoke: vi.fn(async () => undefined),
+}))
 vi.mock("@/lib/db", () => ({ db: {} }))
 
 import type { PrismaClient } from "@/generated/prisma/client"
@@ -84,6 +87,30 @@ function createMockPrisma() {
       if (!session) return null
       if (include?.user) return { ...session, user: testUser }
       return session
+    },
+    findUniqueOrThrow: async ({
+      where,
+    }: {
+      where: { sessionToken: string }
+    }) => {
+      const session = sessions.find(
+        (row) => row.sessionToken === where.sessionToken,
+      )
+      if (!session) throw new Error("Session not found")
+      return session
+    },
+    findMany: async ({
+      where,
+      select,
+    }: {
+      where: { userId: string; revokedAt: null }
+      select?: { id: boolean }
+    }) => {
+      return sessions
+        .filter(
+          (row) => row.userId === where.userId && row.revokedAt === null,
+        )
+        .map((row) => (select?.id ? { id: row.id } : row))
     },
   }
 

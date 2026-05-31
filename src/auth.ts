@@ -6,19 +6,36 @@ import type { Role } from "@/generated/prisma/enums"
 import { authConfig, handleRouteAuthorization } from "@/auth.config"
 import { extractSessionMetadata } from "@/lib/auth/session-metadata"
 import {
+  auditDeny,
+  auditLogin,
+  isAllowlistedEmail,
+} from "@/lib/auth/audit"
+import {
+  logOAuthDeny,
+  logOAuthError,
+  logOAuthSuccess,
+} from "@/lib/auth/auth-metrics"
+import {
   getSessionExpiryFromRequest,
   getSessionExpiryReason,
   SESSION_ABSOLUTE_MAX_AGE_SEC,
 } from "@/lib/auth/session-expiry"
 import { createSingleSessionAdapter } from "@/lib/auth/single-session"
+import {
+  buildAuthCookies,
+  shouldUseSecureCookies,
+} from "@/lib/auth/secure-cookies"
 import { isDemoAuthEnabled } from "@/lib/demo-mode"
 import { db } from "@/lib/db"
 import { env } from "@/lib/env"
 
 const demoAuth = isDemoAuthEnabled()
+const useSecureCookies = shouldUseSecureCookies()
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  useSecureCookies,
+  cookies: buildAuthCookies(useSecureCookies),
   adapter: demoAuth ? undefined : createSingleSessionAdapter(db),
   providers: [
     Google({
@@ -48,15 +65,59 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (demoAuth) return
 
       const metadata = extractSessionMetadata(await headers(), env.AUTH_SECRET)
-      if (!metadata.userAgent && !metadata.ipHash && !metadata.device) return
 
       await db.session.updateMany({
         where: { userId: user.id, revokedAt: null },
         data: metadata,
       })
+
+      const session = await db.session.findFirst({
+        where: { userId: user.id, revokedAt: null },
+        orderBy: { lastSeenAt: "desc" },
+        select: { id: true },
+      })
+
+      await auditLogin({
+        userId: user.id,
+        email: user.email ?? null,
+        sessionId: session?.id ?? null,
+        ipHash: metadata.ipHash,
+        device: metadata.device,
+      })
+
+      logOAuthSuccess("google")
+    },
+  },
+  logger: {
+    error(code, ...message) {
+      logOAuthError(String(code), message.map(String).join(" "))
     },
   },
   callbacks: {
+    async signIn({ user }) {
+      if (demoAuth) return true
+      if (!user.email) {
+        logOAuthDeny("missing_email")
+        return false
+      }
+
+      const metadata = extractSessionMetadata(await headers(), env.AUTH_SECRET)
+
+      const allowed = await isAllowlistedEmail(user.email)
+      if (!allowed) {
+        await auditDeny({
+          email: user.email,
+          userId: user.id ?? null,
+          ipHash: metadata.ipHash,
+          device: metadata.device,
+          reason: "allowlist",
+        })
+        logOAuthDeny("allowlist")
+        return false
+      }
+
+      return true
+    },
     async authorized({ auth, request }) {
       const { nextUrl } = request
 
