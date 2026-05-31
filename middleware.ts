@@ -1,12 +1,11 @@
 import NextAuth from "next-auth"
 import { NextResponse } from "next/server"
-import type { NextRequest } from "next/server"
 import { authConfig } from "@/auth.config"
 import { checkRateLimit, isRateLimitedRoute } from "@/lib/auth/edge-rate-limit"
 
 const { auth } = NextAuth(authConfig)
 
-export default function middleware(request: NextRequest) {
+export default auth((request) => {
   const { pathname } = request.nextUrl
 
   if (isRateLimitedRoute(pathname, request.method)) {
@@ -15,8 +14,8 @@ export default function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  return auth(request)
-}
+  return NextResponse.next()
+})
 
 export const config = {
   matcher: [
